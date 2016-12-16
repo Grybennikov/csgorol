@@ -1,0 +1,42 @@
+<div class="popup-support">
+	<div>
+		<a href="#" class="logo-popup-profile"></a>
+		<div class="support-content">
+				<h2 class="support-title">ЧЕСТНАЯ ИГРА - КАК ЭТО РАБОТАЕТ</h2>
+				<div class="first-argument">
+					<div class="first-icon"></div>
+					<span class="arguments-text">За каждый внесенный 0,01$ <span class="true-text">(1 цент)</span> вы получаете 1 билет. <span class="true-text">(0,01$ = {{fairPplay.rate}} копейки)</span>. Для удобства мы выводим цены в рублях по курсу ЦБ. То есть, например, если вы внесли депозит на {{fairPplay.rate}} руб, то выполучите 100 билетов <span class="true-text">(т.к. {{fairPplay.rate}} руб = 1$, 1$ = 100 центов, а 1 цент = 1 билет)</span></span>
+					<div class="second-icon"></div>
+					<span class="arguments-text">В начале каждого раунда наша система берет абсолютно рандомное длинное число от 0 до 1 <span class="true-text">(например 0.83952926436439157)</span> и шифрует его через md5 , и показывает его в зашифрованом виде в начале раунда. 
+<span class="true-text"><a style="text-decoration: none;" class="true-text" href="https://ru.wikipedia.org/wiki/MD5">(если вы не знаете, что такое md5 - можете почитать статью на википедии)</a></span>
+					<div class="third-icon"></div>
+					<span class="arguments-text">Затем, когда раунд завершился, система показывает то число, которое было шифровано вначале <span class="true-text">(проверить его вы можете на сайте)</span> и умножает его на банк <span class="true-text">(в центах)</span>
+					<div class="simple">
+						<span class="simple-text"><span class="simple-title">НАПРИМЕР:</span> В конце раунда банк составил 1000$ <span class="true-text">(т.к. мы выводим цены в рублях, Вам нужно будет делить банк по курсу 1$={{fairPplay.rate}} руб.)</span>, а 1000$ = 100000 центов <span class="true-text">(1$ = 100 центов)</span> то нужно будет число 0.83952926436439157 умножить на банк 100000 центов <span class="true-text">(это цифры, которые мы брали для примера)</span> и получим число, у которого есть 83952 билет.<br>Следовательно, чем на большую сумму депозит Вы внесете - тем больше билетов Вы получите, а значит выше шанс получить выигрышный билет.<br><br>Вот и всё. Принцип работы честной игры заключается в том, что мы никак не можем знать какой будет банк в конце игры, а рандомное число для умножения на банк мы даем в самом начале раунда и следовательно даже если бы мы сильно этого захотели, то никак бы не смогли сделать подставного победителя.</span>
+					</div>
+
+					<div class="check-fair">
+						<h2>ПРОВЕРКА ЧЕСТНОЙ ИГРЫ</h2>
+						<span>Число раунда* банк <span class="true-text">(в копейках)</span> / {{fairPplay.rate}} <span class="true-text">(курс = $)</span> = выигрышный билет</span>
+						<form name="form" class="css-form" novalidate ng-submit="form.$valid && checkHash()">
+							<input class="input_popup" type="text" ng-model="roundHash" name="roundHash" placeholder="Хэш Раунда" ng-minlength="32" ng-maxlength="32" required autocomplete="off" >
+							<span class="input_popup_error" ng-show="(form.$submitted || form.roundHash.$touched) && (form.roundHash.$error.required || form.roundHash.$error.minlength || form.roundHash.$error.maxlength)">Введите корректный хеш!</span>
+
+							<input class="input_popup" type="text" ng-model="roundNum" name="roundNum" placeholder="Число Раунда" required autocomplete="off" >
+							<span class="input_popup_error" ng-show="(form.$submitted || form.roundNum.$touched) && form.roundNum.$error.required">Введите корректное число раунда!</span>
+
+							<input class="input_popup" type="text" ng-model="roundPrice" name="roundPrice" placeholder="Количество копеек в раунде" required autocomplete="off" >
+							<span class="input_popup_error" ng-show="(form.$submitted || form.roundPrice.$touched) && form.roundPrice.$error.required">Введите банк раунда (в копейках)!</span>
+
+							<input class="btn_popup" type="submit" value="Проверить">
+
+							<div id="checkResult">
+								<span class="fairplay-error" ng-show="form.$valid && result == 0">Хэш Раунда и Число Раунда не совпадают!</span>
+								<span class="fairplay-success" ng-show="form.$valid && result > 0">Выигрышный билет – {{result}}</span>
+							</div>
+						</form>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>

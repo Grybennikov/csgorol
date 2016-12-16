@@ -1,0 +1,50 @@
+<div id="fairplay" class="itemmodal" style="width: 700px; padding: 20px 20px 15px 20px;">
+	<div class="pageTitle">
+		<span class="top_title">{{'TEXT_5' | translate}}</span> {{'TEXT_53' | translate}}
+	</div>
+
+	<div style="line-height: 18px;font-size: 14px;">
+		<div class="questions_block_tex_popup qbtp_1"> {{'TEXT_54' | translate}}
+		 </div>
+	   
+		<div class="questions_block_tex_popup qbtp_2"> {{'TEXT_55' | translate}} <a href="https://ru.wikipedia.org/wiki/MD5" style="color: #B7D9FF;" target="_blank">{{'TEXT_56' | translate}}</a>)</span> 
+		</div>
+	   
+
+	   <div class="questions_block_tex_popup qbtp_3"> {{'TEXT_57' | translate}}</div>
+	   
+		<div style="padding-bottom: 10px; padding-top: 20px;"> {{'TEXT_58' | translate}}<br><br>{{'TEXT_58_0' | translate}}
+		</div>
+
+		<div class="questions_block_tex_popup qbtp_4"> {{'TEXT_59' | translate}}</div>
+
+		<div style="padding-bottom: 10px; padding-left: 10px; padding-top: 30px;"> {{'TEXT_60' | translate}} </div>
+	</div>
+
+	<div style="text-align: left;">
+		<div style="text-transform: uppercase; font-size: 24px;line-height: 24px;padding-top: 20px;padding-left: 10px;padding-bottom: 20px;text-align: left;">{{'TEXT_61' | translate}}</div>
+
+		<div style="margin-bottom: 5px;text-align: left;padding: 0 0 0 10px; color:#ff9436;">{{'TEXT_62' | translate}}</div>
+
+		<form name="form" class="css-form" novalidate ng-submit="form.$valid && checkHash()">
+			<input class="input_popup" type="text" ng-model="roundHash" name="roundHash" placeholder="Хэш Раунда" ng-minlength="32" ng-maxlength="32" required autocomplete="off" >
+			<span class="input_popup_error" ng-show="(form.$submitted || form.roundHash.$touched) && (form.roundHash.$error.required || form.roundHash.$error.minlength || form.roundHash.$error.maxlength)">{{'TEXT_63' | translate}}</span>
+			<br>
+
+			<input class="input_popup" type="text" ng-model="roundNum" name="roundNum" placeholder="Число Раунда" required autocomplete="off" >
+			<span class="input_popup_error" ng-show="(form.$submitted || form.roundNum.$touched) && form.roundNum.$error.required">{{'TEXT_64' | translate}}</span>
+			<br>
+
+			<input class="input_popup" type="text" ng-model="roundPrice" name="roundPrice" placeholder="Количество копеек в раунде" required autocomplete="off" >
+			<span class="input_popup_error" ng-show="(form.$submitted || form.roundPrice.$touched) && form.roundPrice.$error.required">{{'TEXT_65' | translate}}</span>
+			<br>
+
+			<input class="btn_popup" type="submit" value="Проверить" style="width: 220px; color: #333; margin-top: 5px">
+
+			<div id="checkResult">
+				<span class="fairplay-error" ng-show="form.$valid && result == 0">{{'TEXT_66' | translate}}</span>
+				<span class="fairplay-success" ng-show="form.$valid && result > 0">{{'TEXT_67' | translate}} - {{ result }}</span>
+			</div>
+		</form>
+	</div>
+</div>

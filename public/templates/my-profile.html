@@ -1,0 +1,31 @@
+<div class="popup-profile">
+	<div>
+		<a href="#" class="logo-popup-profile"></a>
+	</div>
+
+	<div class="popup-profile-stats">
+		<div class="popup-profile-column popup-profile-column-left">
+			<!-- <div class="popup-profile-reputation">
+				Репутация: <span>1</span>
+				<a href="#">+</a>
+			</div> -->
+			<img ng-src="{{ profileInfo.avatarfull }}">
+		</div>
+
+		<div class="popup-profile-column popup-profile-column-right">
+			<ul>
+				<li>Ник: <span>{{ profileInfo.personaname }}</span></li>
+				<li>игр: <span>{{ profileInfo.stats.played }}</span></li>
+				<li>Побед: <span>{{ profileInfo.stats.won }}</span></li>
+				<li>win rate: <span>{{ profileInfo.stats.winrate | number: 2}}%</span></li>
+				<li>сумма банков <span>{{ profileInfo.stats.total | number: 2 }} руб.</span></li>
+			</ul>
+		</div>
+
+		<div class="clear"></div>
+	</div>
+
+	<a ng-href="{{ profileInfo.profileurl }}" class="popup-profile-link" target="_blank">{{ profileInfo.profileurl }}</a> 
+
+	<a href="#/my/history" ng-click="closeDialog()" class="popup-profile-btn-history">История Игр</a>
+</div>

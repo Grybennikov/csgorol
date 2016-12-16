@@ -1,0 +1,75 @@
+<div class="siteSettings card">
+  <div class="title-block">
+    <h2 translate="SITE_SETTINGS.TITLE"></h2>
+  </div>
+  <div class="state-reload" ng-click="siteSettings.stateReload()">
+    <i class="fa fa-refresh" aria-hidden="true"></i>
+  </div>
+
+  <div class="dx-fieldset enable-disable-triggers">
+    <h2>Jackpot games: </h2>
+    <div class="dx-field">
+      <div class="dx-field-label">Percent</div>
+      <div class="dx-field-value-static">
+        <div dx-number-box="siteSettings.UI.persentRange"></div>
+      </div>
+    </div>
+    <div class="dx-field">
+      <div class="dx-field-label">Min bet ($)</div>
+      <div class="dx-field-value-static">
+        <div dx-number-box="siteSettings.UI.minBet"></div>
+      </div>
+    </div>
+    <div class="dx-field">
+      <div class="dx-field-label">Max items in game</div>
+      <div class="dx-field-value-static">
+        <div dx-number-box="siteSettings.UI.maxGameItems"></div>
+      </div>
+    </div>
+    <div class="dx-field">
+      <div class="dx-field-label">Game time (seconds)</div>
+      <div class="dx-field-value-static">
+        <div dx-number-box="siteSettings.UI.gameTime"></div>
+      </div>
+    </div>
+    <div class="dx-field">
+      <div class="dx-field-label">Trade link</div>
+      <div class="dx-field-value-static">
+        <div dx-text-box="siteSettings.UI.tradeLink"></div>
+      </div>
+    </div>
+
+    <div class="dx-field">
+      <div class="dx-field-label">Choose the winner: </div>
+      <div class="dx-field-value-static" style="width: inherit;">
+        <div dx-select-box="siteSettings.UI.chooseWinnerList" style="float: left;">
+          <div data-options="dxTemplate: { name:'myField' }">
+            <div dx-text-box=" value: userName + ' (' + userId + ')' } "></div>
+          </div>
+          <div data-options="dxTemplate: {name: 'choseWinnerTemplate'}">
+            <div style="padding: 2px 0;">
+              <img ng-src="{{avatar}}" style="width: 30px;">
+              {{userId}} - {{username}}
+            </div>
+          </div>
+        </div>
+        <div dx-button="siteSettings.UI.chooseWinnerButton"></div>
+        <div dx-button="siteSettings.UI.resetWinnerButton"></div>
+      </div>
+    </div>
+
+    <h2>Bot codes: </h2>
+    <div class="dx-field">
+      <div class="dx-field-label">Jackpot</div>
+      <div class="dx-field-value-static bots-codes">
+        <div class="code" ng-bind="siteSettings.botsCodes.jackpotBot"></div>
+        <i class="fa fa-refresh refresh" aria-hidden="true"
+           ng-click="siteSettings.refreshCode('jackpotBot')"></i>
+      </div>
+    </div>
+  </div>
+
+ </div>
+  </div>
+
+</div>

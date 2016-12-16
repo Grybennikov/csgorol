@@ -1,0 +1,20 @@
+{
+  "TITLE": "Roulette",
+  "OFFER": {
+    "ERRORS": {
+      "NOT_ACTIVE": "The offer is not active.",
+      "MUST_BE_AUTH": "You must have connected mobile authenticator",
+      "ONLY_YOU_ITEMS": "The interest rate should only be your thing!",
+      "GAME_NUMBER_NOT_FOUND": "Game number not found",
+      "MAX_ITEMS": "Items in the rate should be no more then -",
+      "ITEM_NOT_FOUND_ON_INVENTORY": "One or more of the things is no longer in inventory!",
+      "ANOTHER_GAME": "The thing is not from the instructions of the game!",
+      "NOT_PUT_TICKET": "You can not put tickets!",
+      "NOT_MODIFY_ITEMS": "You can not put modifying things ",
+      "SPECIFIED_PRICE_RESOURCE": "Not specified place of taking bets prices",
+      "MIN_BET": "Minimum rate = ",
+      "GAME_STARTED": "The game has already begun. Join the following."
+    },
+    "BET_ACCEPT": "The rate adopted"
+  }
+}

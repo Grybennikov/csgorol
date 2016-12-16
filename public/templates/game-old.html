@@ -1,0 +1,116 @@
+<div class="game current-round game-in-history">
+	<div class="game-info">
+		<div class="game-price">
+			<div class="game-price-inner">
+				<div class="game-price-content">
+					<p class="nomber_of_game">
+						{{'GAME' | translate}} #<span id="roundId">{{gameInfo.game}}</span></span>
+					</p>
+					
+					<div class="line"></div>
+
+					<p class="sum_of_game">
+						{{'BANK' | translate}}
+
+						<span id="roundBank">{{gameInfo.bank | number : 2}}</span><span style="font-size: 14px; padding-left: 3px; color: #ccc;">{{currency}}</span>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="game-progress"></div>
+
+		<div class="game-end" ng-class="hideGameEnd_cs">
+			<div class="game-end-winner">
+				<div class="game-end-winner-info">
+					<span class="game-end-winner-name">{{'PLAYER_WON' | translate}}: <strong>{{ gameInfo.winnername }}</strong></span><br/>
+					<span class="game-end-winner-chance">{{'CHANCE' | translate }}: <strong>{{ gameInfo.winnerchance }} %</strong></span><br/>
+					<span class="game-end-winner-money">{{'SIDEBAR_LAST_WINNER_MONEY' | translate }} <strong class="winner-cost-value">{{ gameInfo.winnermoney | number : 2 }} {{ currency }}</strong></span>
+				</div>
+
+				<div class="game-end-label">
+					<span>{{'TEXT_40' | translate}}</span>
+
+					<a href="/#/">{{'TEXT_41' | translate}}</a>
+				</div>
+
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="fairgame" style="margin-top:30px;">
+	<span class="fairgame-link" ng-click="openFairPlayModal()">{{'TEXT_5' | translate}}</span>
+	{{gameInfo.roundNum}} {{'TEXT_43' | translate}} * {{(gameInfo.bank*100).toFixed()}} {{'TEXT_44' | translate}} / 64 {{'TEXT_45' | translate}} = {{gameInfo.winnerTicket}} {{'TEXT_46' | translate}}
+</div>
+
+<div class="gameEndLast" style="margin-top:0px;" ng-class="gameEndClass">
+	<div class="icon_last_game game-end"></div>
+	<div class="gametimeCont">{{'END_GAME_STATUS' | translate}}
+		<br>
+		<span class="fairgame-link" ng-click="openFairPlayModal()">{{'TEXT_5' | translate}}</span>
+		<u style="font-weight: 400;">{{'TEXT_6' | translate}} {{gameInfo.roundNum}}</u>
+	</div>
+</div>
+
+<div class="def-table game-table">
+	<div class="history-block-item" ng-repeat="bid in gameInfo.bids | toArray | orderBy:'-lTicket'">
+		<div class="user">
+			<img ng-src="{{bid.ava}}">
+
+			<a href="http://steamcommunity.com/profiles/{{bid.steamid}}" data-profile="{{bid.steamid}}" target="_blank">{{bid.user}}</a> {{'TEXT_8' | translate}} {{bid.items.length}} {{'TEXT_9' | translate}} <span>({{bid.money | number: 2}} {{currency}})</span> 
+
+			<span class="help" data-original-title="bid.item.itemname" title=""></span>
+		</div>
+
+		<div class="tickets">
+			{{'TICKETS' | translate}}: {{'FROMTO' | translate}} <span>#{{bid.fTicket}}</span>  {{'TO' | translate}} <span>#{{bid.lTicket}}</span> 
+		</div>
+
+		<div class="items">
+			<div class="items-block-item covert" ng-repeat="item in bid.items | orderBy: 'cost':true" style="background-color:{{item.background_color}};color:{{item.color}};border-color:{{item.background_color}}" title="{{item.itemname}}">
+				<div class="item-cont" title="" data-original-title="{{item.itemname}}">
+					<span class="price">{{item.cost}} {{currency}}</span>
+				
+					<div class="item-wrap-img" title="{{item.itemname}}">
+						<img ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.image}}/200fx200f">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="msgs startfinish-msg gameStart current-round last_new_game" style="margin-top:30px;">
+	<div class="icon_last_game"></div>
+
+	<div class="gametimeCont">{{'TEXT_10' | translate}}</div>
+
+	<span class="fairgame-link" ng-click="openFairPlayModal()">{{'TEXT_5' | translate}}</span>
+
+	<u style="font-weight: 400;">{{'TEXT_12' | translate}} {{gameInfo.roundHash}}</u>
+</div>
+
+
+
+            <div class="profile-item-main-page-i profile-item-main-active">
+                <div class="profile-item-main-page-i-ico"><img src="img/roulette-img.jpg"></div>
+                <div class="profile-item-main-page-i-nickname"><a href="http://steamcommunity.com/profiles/{{bid.steamid_other}}" target="_blank">Mersedes500</a></div>   
+                <div class="profile-item-main-page-i-chance"><span class="profile-item-main-page-i-chance-text">шанс</span><span class="profile-item-main-page-i-chance-number">89</span>%</div>
+                <div class="profile-item-main-page-i-number-skins"><span>3</span> скина</div>
+                <div class="profile-item-main-page-i-sum">(<span>10</span> руб.)</div>
+                <div class="clear"></div>
+                <div class="wrapper-list-item-main-page-skins">
+                    <div class="list-item-main-page-skins-i">
+                        <img src="http://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFUuh6qZJmlD7tiyl4OIlaGhYuLTzjhVupJ12urH89ii3lHlqEdoMDr2I5jVLFFSv_J2Rg/85fx70f">
+                    </div>
+                    <div class="list-item-main-page-skins-i">
+                        <img src="http://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFUuh6qZJmlD7tiyl4OIlaGhYuLTzjhVupJ12urH89ii3lHlqEdoMDr2I5jVLFFSv_J2Rg/85fx70f">
+                    </div>
+                    <div class="list-item-main-page-skins-i">
+                        <img src="http://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFUuh6qZJmlD7tiyl4OIlaGhYuLTzjhVupJ12urH89ii3lHlqEdoMDr2I5jVLFFSv_J2Rg/85fx70f">
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
