@@ -1,0 +1,70 @@
+<div class="wp-central-content">
+
+
+<div class="wrapper-main-game-title">
+            <p class="wrapper-main-game-title-i">Игра #<span class="ng-binding">{{singleGame.id}}</span></p>
+</div>
+
+<div class="wrapper-main-game-title-bank ng-binding">
+            БАНК {{singleGame.cost | number : 2}}<span> {{currency}}</span>
+</div>
+
+<div class="func-winner">
+	<div class="left-info">
+		<p class="winner-my-ticket">Победный билет: <span class="bold-game">#{{winTicket}}</span> <span class="small-info">(всего:{{sumTickets}})</span></p>
+		<p class="winner-my-player">Победил игрок: <span class="bold-game">{{singleGame.winner.user.personaname}}</span>  <span class="small-info">(шанс: {{singleGame.percent | number: 2}}%)</span></p>
+		<p class="winner-my-cash">Выигрыш: <span class="bold-game win-sum">{{singleGame.cost | number: 2}}<span> {{currency}}</span></span></p>
+	</div>
+	<div class="right-info">
+		<div class="game-ok">
+			<span>ИГРА ЗАВЕРШЕНА</span>
+		</div>
+		<a href="/#/">Вернуться на главную страницу</a>
+	</div>
+</div>
+
+
+<div class="game-end my">
+	<div class="top-line">
+		<span> <span class="yellow-active">{{currentGame.clearGame.num}}</span> (число раунда) * <span class="yellow-active">1381055</span> (банк в копейках) / <span class="yellow-active">{{infConfig.rate}}</span>  = <span class="yellow-active">4565</span> (победный билет)</span>
+	</div>
+    <p class="end-title">ИГРА ЗАКОНЧИЛАСЬ</p>
+    <p class="number-round"><span class="fair-game-link" ng-click="openFairModal()">Чесная игра</span><span>Число раунда: {{singleGame.module}}</span></p>
+</div>
+
+
+<div class="wrapper-profile-item-main-page my-game">
+              <div class="profile-item-main-page-i profile-item-main-active my-game" ng-repeat="bid in singleGame.tradeoffers | orderBy:'-id'">
+                <div class="profile-item-main-page-i-ico"><img ng-src="{{bid.user.avatarfull}}"></div>
+                <div class="profile-item-main-page-i-nickname"><a href="http://steamcommunity.com/profiles/{{bid.steamid_other}}" target="_blank">{{bid.user.personaname}}</a></div>
+                <div class="profile-item-main-page-i-chance"><span class="profile-item-main-page-i-chance-text">шанс</span><span class="profile-item-main-page-i-chance-number" ng-repeat="user in singleGame.users | filter:{steamid: bid.steamid_other}">{{user.chance*100 | number: 2}}</span>%</div>
+                <div class="profile-item-main-page-i-number-skins"><span>{{bid.items_to_receive.length}}</span> {{num2str(bid.items_to_receive.length, ['скин', 'скина', 'скинов'])}}</div>
+                <div class="profile-item-main-page-i-ticket">Билет: <span class="profile-item-main-page-i-chance-number">от</span> #{{bid.fTicket}} <span class="profile-item-main-page-i-chance-number">до</span> #{{bid.lTicket}}</div>
+
+                <div class="profile-item-main-page-i-sum">(<span>{{bid.total | number: 2}}</span> руб.)</div>
+                <div class="clear"></div>
+                <div class="clear"></div>
+                <div class="wrapper-list-item-main-page-skins">
+                    <div class="list-item-main-page-skins-i" ng-repeat="item in bid.items_to_receive track by $index">
+                            <a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" data-title="{{ item.description.name }}" data-price="~ {{ item.price | number : 2 }}" style="position:relative;">
+                                    <img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
+                                    <div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">
+                                        <div class="history-item-prize-drop-top">
+                                            <div class="history-item-prize-drop-left" style="background: {{ item.description.background_color }};">
+                                                <div class="history-item-prize-drop-image">
+                                                    <img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" alt="image">
+                                                </div>
+                                            </div>
+                                            <div class="history-item-prize-drop-top-inner">
+                                                <div class="history-item-prize-drop-title">{{ item.description.name }}</div>
+                                                <div class="history-item-prize-drop-price">~ {{ item.price | number : 2 }} {{currency}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+
+</div>

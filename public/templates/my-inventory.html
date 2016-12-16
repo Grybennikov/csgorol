@@ -1,0 +1,75 @@
+
+<div class="wp-central-content-about">
+	<div class="my-inventory">
+		<h3 class="inventory-title"><span>Мой</span> инвентарь ($<span ng-bind="inventorySumm | number : 2"></span>)</h3>
+	</div>
+	<div class="inventory">
+		<div class="title">
+			<div class="left">
+				Select the skins:
+			</div>
+			<div class="right">
+				<div class="button" ng-click="reloadInventory()">Обновить</div>
+				<div class="button"><a href="{{infConfig.tradelink}}" target="_blank">Депозит</a></div>
+				<div class="button" ng-click="withdraw()">Вывести</div>
+			</div>
+		</div>
+
+		<div class="items-box"  ng-if="!loading">
+			<div  class="inventory-is-empty">
+				<p ng-if="!inventoryItems.length">Инвентарь пуст</p>
+				<p ng-if="!inventoryItems.length"><a href=""> Сделай депозит!!!</a></p>
+
+				<div class="items">
+					<div class="blue item" ng-repeat="item in inventoryItems track by $index"
+						 ng-class="{selected: item.selected}"
+						 ng-click="selectItem(item.id, $index)" ng-cloak>
+						<span class="price" ng-bind="'$' + item.price"></span>
+						<img class="blue_skin" ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.image}}">
+						<span class="name">{{item.name}}&nbsp;</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="kart-loader" ng-if="loading">
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+		<div class="sheath">
+			<div class="segment"></div>
+		</div>
+	</div>
+</div>

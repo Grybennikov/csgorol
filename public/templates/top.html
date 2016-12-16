@@ -1,0 +1,24 @@
+<div class="wp-central-content-history">
+    <h2 class="top-title"><span class="first-word">ТОП</span>-игроков</h2>
+
+  <div class="top-players">
+    <div class="header">
+      <div>Место</div>
+      <div>Профиль</div>
+      <div>Побед</div>
+      <div>Сумма банков</div>
+    </div>
+
+    <ul>
+      <li ng-repeat="player in topPlauers">
+        <div>{{$index+1}}</div>
+        <div>
+          <img ng-src="{{player.avatar}}">
+          <a class="player-name" ng-href="{{player.profileurl}}" target="_blank" data-profile="{{player.steamId}}">{{player.name}}</a>
+        </div>
+        <div>{{player.games || 0}}</div>
+        <div>{{currency}}{{(player.won || 0) | number : 2 }}</div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title><%- title %></title>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+  <script src="components/moment/moment.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+  <script src="/components/angular-toastr/dist/angular-toastr.tpls.js"></script>
+
+  <link rel="stylesheet" href="/components/angular-toastr/dist/angular-toastr.min.css" />
+
+  <link rel="stylesheet" href="/css/index.css" />
+  <link rel="stylesheet" href="components/font-awesome/css/font-awesome.min.css" />
+
+</head>
+<body ng-app="steamBettingSite" ng-controller="rootController as root">
+<script>var g = {};</script>
+<% if (user) { %>
+<script>g.userId = <%- JSON.stringify(user.id) %>;</script>
+<% } %>
+
+<section id="home" class="main-frame wrapper">
+  <section class="left-space" ng-class="{
+  'full-left': !root.minMenu,
+  'min-left': root.minMenu,
+  }">
+    <% include ./templates/leftSpace %>
+  </section>
+  <section class="center-space scroll-block">
+    <header>
+      <div class="user-data">
+        <% if (user) {%>
+        <p class="logout">
+          <i class="fa fa-refresh rotation"
+             ng-click="root.reloadUserInfo()"
+             ng-class="{animated: root.UI.userDataLoader}">
+          </i>
+          <span ng-bind="'$' + root.userData.credits"></span>
+          <img src="<%-user.userData.avatar%>"></img>
+          <span><%-user.displayName%></span>
+          <a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+        </p>
+        <%} else {%>
+        <p style="font-size: 30px;"><a href="/login" class="btn"><i class="fa fa-sign-in" aria-hidden="true"></i></a></p>
+        <% } %>
+      </div>
+    </header>
+
+
+<script>
+  'use strict';
+
+  angular
+    .module('steamBettingSite', ['toastr'])
+    .controller('rootController', function($rootScope, $scope, toastr, RouletteGame, User) {
+      var socket = io();
+
+      var vm = this;
+      vm.UI = {
+        userDataLoader: false
+      }
+
+      vm.userData = {};
+      vm.gamesData = {
+        jackpot: {}
+      };
+
+      vm.reloadUserInfo = function(){
+        vm.UI.userDataLoader = true;
+        User.info()
+          .then(function(data) {
+            vm.userData = data;
+            vm.UI.userDataLoader = false;
+          })
+      }
+
+      socket.on('jackpotGameData', function(data) {
+        if (vm.gamesData.jackpot.cost < data.cost) {
+          vm.gamesData.jackpot.lastBet = (data.cost - vm.gamesData.jackpot.cost).toFixed(2);
+          vm.gamesData.jackpot.cost = data.cost;
+          $scope.$apply();
+          $('#jackpot-add-money').addClass('flipOutX');
+
+
+          setTimeout(function(){
+            $scope.$apply(function() {
+              vm.gamesData.jackpot.lastBet = false;
+            });
+            $('#jackpot-add-money').removeClass('flipOutX');
+          }, 2000)
+        }
+      });
+
+      socket.on('userData-' + g.userId, function(userData) {
+        $scope.$apply(function() {
+          vm.userData = userData;
+        })
+      });
+
+
+      function loadFirstData() {
+        RouletteGame.current()
+          .then(function(data) {
+            vm.gamesData.jackpot = data.gameData;
+          })
+        if (g.userId) {
+          vm.reloadUserInfo();
+        }
+
+      }
+
+      loadFirstData();
+
+    })
+    .directive('ngEnter', function () {
+      return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+          if(event.which === 13) {
+            scope.$apply(function (){
+              scope.$eval(attrs.ngEnter);
+            });
+
+            event.preventDefault();
+          }
+        });
+      };
+    });
+
+</script>
+<script src="/socket.io/socket.io.js"></script>

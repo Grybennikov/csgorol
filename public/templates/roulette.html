@@ -1,0 +1,14 @@
+<div class="wrapper-roulette"> 
+	 <div class="wrapper-roulette-i"> 
+	     <ul> 
+	         <li ng-repeat="player in multipliedPlayers track by $index"> 
+	             <div class="wrapper-roulette-i-content"> 
+	                 <img ng-src="{{player.url}}"> 
+	                 <p class="wrapper-roulette-i-descriptio"><span>{{player.chance | number: 2}}</span>%</p> 
+	             </div> 
+	         </li> 
+	     </ul> 
+	     <div class="clear"></div> 
+	 </div> 
+	 <div class="triangle-roulette"></div> 
+</div>

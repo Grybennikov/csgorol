@@ -1,0 +1,68 @@
+
+<div class="wp-central-content-about">
+	<div class="wp-content-top-player">
+	    <h3 class="inventory-title"><span>Моя</span> история</h3>
+		<div class="wp-list-history-block" ng-repeat="game in socket_cs.myHistory track by $index">
+			<div class="my-history-block">
+				<div class=" my-history-game">
+				    <div class="history-block-i-top-info-left left">
+						<span class="history-block-i-top-info-left-title" >Игра #</span>
+						<span class="history-block-i-top-info-left-number">{{game.id}}</span>
+						<span><a href="/#/game/{{game.id}}" class="full-my-history">(посмотреть полную версию игры)</a></span>
+				    </div>
+					<div class="status-my-win">
+						<p class="win" ng-if="game.winner.user.steamid == auth.steamid">Выигрыш</p>
+						<p class="loose" ng-if="game.winner.user.steamid !== auth.steamid">Проигрыш</p>		
+					</div>
+			   		<div class="clear"></div>
+					<div class="info-user" ng-repeat="user in game.users | filter:{steamid: auth.steamid}">
+						<div class="info-my-left">
+							<div class="user-history-avatar left"><img src="{{game.winner.user.avatarfull}}"></div>
+							<div class="content-player">
+								<p class="player-info-left-text-nickchance"><span class="player-info-left-text-nickname">{{game.winner.user.personaname}}</span></p><span class="chance-winning">(шанс {{game.winner.chance*100 | number : 2}}<span>%</span>)</span>
+							</div>
+						</div>
+						<div class="info-my-right">
+							<span class="sum-jackpot-title">Сумма джекпота:</span>
+							<span class="sum-jackpot">{{game.jackpot | number : 2}} <span>{{currency}}</span></span>
+							<div class="clear"></div>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+
+				<div class="info-deposit-user" ng-repeat="user in game.users | filter:{steamid: auth.steamid}">
+					<p class="your-deposit">
+					<span>Вы внесли <span class="alert-class">{{game.userItemsCounter}}</span> {{num2str(bid.items_to_receive.length, ['предмет', 'предмета', 'предметов'])}} на сумму <span class="alert-class">{{user.total | number : 2}}</span> {{currency}}</span> <span class="your-win-chance">Ваш шанс на выигрыш: {{user.chance*100 |number: 2}}%</span></p>
+					<!-- <p>Билет: от <span class="alert-class">#1</span> до <span class="alert-class">#614</span></p> -->
+				</div>
+				<div class="info-items">
+				 	<div class="list-items">
+				    	<ul>
+				        	<li ng-repeat="thing in game.items | orderBy: 'info[0].price'">
+								<a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.info[0].description.icon_url }}/85fx70f" data-title="{{ thing.info[0].description.name }}" data-price="~ {{ thing.info[0].price | number : 2 }}" style="position:relative;">
+									<img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.info[0].description.icon_url }}/85fx70f" alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
+									<div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">
+										<div class="history-item-prize-drop-top">
+											<div class="history-item-prize-drop-left" style="background: {{ thing.info[0].description.background_color }};">
+												<div class="history-item-prize-drop-image">
+													<img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.info[0].description.icon_url }}/85fx70f" alt="image">
+												</div>
+											</div>
+											<div class="history-item-prize-drop-top-inner">
+												<div class="history-item-prize-drop-title">{{ thing.info[0].description.name }}</div>
+												<div class="history-item-prize-drop-price">~ {{ thing.info[0].price | number : 2 }} {{currency}}</div>
+											</div>
+										</div>
+									</div>
+								</a>
+								<p>{{ thing.info[0].price | number : 2 }} {{currency}}</p>
+							</li>
+							<div class="clear"></div>
+				    	</ul>
+				   	</div>
+				</div> 
+			</div>
+	    </div>
+	</div>
+</div>

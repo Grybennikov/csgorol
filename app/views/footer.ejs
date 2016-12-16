@@ -1,0 +1,17 @@
+</section>
+<section class="right-space" ng-controller="ChatController as chat"
+         ng-class="{
+           'full-right': !chat.hidden,
+           'min-right': chat.hidden
+           }">
+  <% include ./templates/chat %>
+</section>
+</section>
+
+<script src="/js/common/user.service.js"></script>
+<script src="/js/common/warehouse.service.js"></script>
+<script src="/js/jackpotGame/service.js"></script>
+
+
+</body>
+</html>
