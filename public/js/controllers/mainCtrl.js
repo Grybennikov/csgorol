@@ -265,7 +265,7 @@ angular.module('gameApp').controller('mainCtrl', [
         return e.id;
       });
 
-      $http.post('/api/jackpotGame', {betItems: items})
+      $http.post('/api/jackpotBets', {betItems: items})
         .then(function(res){
           $scope.loading = false;
           ngNotify.set('Success', {

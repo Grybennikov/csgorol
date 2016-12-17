@@ -24,7 +24,8 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    module: DataTypes.STRING
+    module: DataTypes.STRING,
+    ticket: DataTypes.INTEGER
   }, {
     tableName: 'games',
     timestamps: false,

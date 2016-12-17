@@ -5,14 +5,9 @@ var coroutine = Promise.coroutine;
 
 module.exports = function (sequelize, DataTypes) {
   var JackpotBets = sequelize.define('JackpotBets', {
-    userId: DataTypes.STRING,
     gameNumber: DataTypes.INTEGER,
-    username: DataTypes.STRING,
-    item: DataTypes.STRING,
-    color: DataTypes.STRING,
-    value: DataTypes.DECIMAL(6,3),
-    avatar: DataTypes.TEXT,
-    image: DataTypes.TEXT,
+    userId: DataTypes.STRING,
+    warehouseId: DataTypes.INTEGER,
     from: DataTypes.INTEGER,
     to: DataTypes.INTEGER
   }, {
@@ -22,6 +17,14 @@ module.exports = function (sequelize, DataTypes) {
       associate: function (models) {
         JackpotBets.belongsTo(models.Games, {
           foreignKey: 'gameNumber'
+        });
+
+        JackpotBets.belongsTo(models.User, {
+          foreignKey: 'userId'
+        });
+
+        JackpotBets.belongsTo(models.Warehouse, {
+          foreignKey: 'warehouseId'
         });
       },
 
@@ -85,7 +88,7 @@ module.exports = function (sequelize, DataTypes) {
        * Выбирает количество игроков в игре
        */
       playersNumber: coroutine(function* (gameNumber) {
-        let result = yield sequelize.query('SELECT  count(distinct userid) AS "count" FROM "jackpotGames" AS "Bets" WHERE "Bets"."gameNumber" = ' + gameNumber);
+        let result = yield sequelize.query('SELECT count(distinct "userId") AS "count" FROM "jackpotBets" AS "JackpotBets" WHERE "JackpotBets"."gameNumber" = ' + gameNumber);
         return parseInt(result[0][0].count);
       }),
       getWinningBet: coroutine(function* (gameNumber, winningNumber) {
