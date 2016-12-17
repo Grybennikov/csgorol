@@ -11,21 +11,21 @@ const  EL = require('../helpers/errorsLog');
 var  request = require('request').defaults({ encoding: null });
 Promise.promisifyAll(request);
 
+var _JackpotGames = this;
 
 module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
   try {
     console.log('Выбор победителя');
 
     let siteSettings = yield db.Info.list(true);
-    siteSettings.gameNumber = parseInt(siteSettings.gameNumber);
     //Выбор данных об игре и ставок
     var result = yield Promise.props({
       game: db.Games.one(siteSettings.current_game),
-      gameBets: db.JackpotBets.list(false, siteSettings.current_game)
+      gameBets: db.JackpotBets.dataList(siteSettings.current_game)
     });
 
     if (!result.gameBets.length) {
-      return next({message: 'Bets not foun'});
+      return next({message: 'Bets not found'});
     }
 
     let game = result.game;
@@ -56,23 +56,25 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
     var winner = yield  db.User.one(winningSteamId);
     winner.chance = _.sumBy(gameBets, function (bet) {
       if (bet.userId === winningSteamId) {
-        return bet.value;
+        return bet.Warehouse.price;
       }
+    });
+
+    winningItems = gameBets.map(function (bet) {
+      return bet.warehouseId;
     });
 
     //Расчёт шанса победителя
     winner.chance = winner.chance * 100 / game.cost;
     winner.chance && (winner.chance = winner.chance.toFixed(3));
 
-    winner.token = winner.tlink ? winner.tlink.substr(winner.tlink.indexOf('token=') + 6) : '';
+    global[config.app.name].jackpotGame.startTime = moment(new Date()).add(100, 'years').toDate();
 
+    //Изменение данных победителя
     global[config.app.name].jackpotGame.startTime = moment(new Date()).add(100, 'years').toDate();
 
     result = yield Promise.props({
-      editUser: db.User.edit(winningSteamId, {
-        won: winner.won + game.cost,
-        games: winner.games + 1
-      }),
+      giveUserItems: db.Warehouse.giveUserItems(winningSteamId, winningItems),
       addedGame: db.Games.add({
         id: siteSettings.current_game + 1,
         module: Math.random() * (0.999999999999999999999999999999)
@@ -81,49 +83,14 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
         winner: winner.name,
         userId: winningSteamId,
         percent: winner.chance
-      }),
-      addWinningItems: db.Queue.add({
-        userid: winningSteamId,
-        token: winner.token,
-        items: _.join(winningItems, '~/~'),
-        status: 'send'
       })
     });
 
     yield Promise.all([
+      db.UserData.creditsWonEdit(winningSteamId, game.cost, 1),
       db.Info.editByName('current_game', siteSettings.current_game + 1)
     ]);
 
-    let manager = global.manager['jackpotBot'];
-    Promise.promisifyAll(manager);
-
-    let inventory = yield  manager.loadUserInventoryAsync(manager.steamID, config.steam.gameId, config.steam.contextId, false);
-
-    let winning = winningItems;
-    let items = [];
-    for (let j = 0; j <= winning.length - 1; j++) {
-      let item = inventory.filter(function (item) {
-        return item.market_name === winning[j].item;
-      });
-      if (item.length) {
-        items.push({
-          appid: config.steam.gameId,
-          contextid: config.steam.contextId,
-          amount: 1,
-          assetid: item[0].assetid
-        });
-      }
-    }
-    let offer = manager.createOffer(winningSteamId);
-    Promise.promisifyAll(offer);
-
-    offer.addMyItems(items);
-    offer.setMessage('Your winning on site: ' + config.siteName + ' in game #:' + siteSettings.current_game);
-    offer.setToken(winner.token);
-
-    let res1 = yield offer.sendAsync();
-    console.log(res1);
-    console.log('Выигрыш отдан');
 
     setTimeout(function() {
       global[config.app.name].startTime = moment(new Date()).add(100, 'years').toDate();
@@ -143,7 +110,7 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
 
       let commissionItems = '';
 
-      let commission = _.sumBy(items, 'value') * commissionPercent / 100;
+      let commission = _.sumBy(items, 'Warehouse.price') * commissionPercent / 100;
 
       //Находин скин со стоимостью близкой к 10% банка
       for (let i = 0; i < items.length; i++) {
@@ -162,7 +129,7 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
       for (let i = 0; i < items.length; i++) {
         let e = items[i];
 
-        if (e.value < commission) {
+        if (e.Warehouse.price < commission) {
           suitableItems.push(e);
         } else {
           tmp.push(items[i])
@@ -170,8 +137,7 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
       }
 
       if (!suitableItems.length) {
-        console.log('min')
-        let minIndex = _.indexOf(items, _.minBy(items, 'value'));
+        let minIndex = _.indexOf(items, _.minBy(items, 'Warehouse.price'));
         items.splice(minIndex, 1);
         return items;
       }
@@ -179,18 +145,18 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
       items = tmp;
 
       //Сумма подходящих элементов меньше 10%
-      if (_.sumBy(suitableItems, 'value') <= commission) {
+      if (_.sumBy(suitableItems, 'Warehouse.price') <= commission) {
         return items;
       }
 
-      suitableItems = _.orderBy(suitableItems, 'value', 'desc');
+      suitableItems = _.orderBy(suitableItems, 'Warehouse.price', 'desc');
 
       let sum = suitableItems[0].value;
       suitableItems.splice(0, 1);
 
       suitableItems.forEach(function (item) {
-        if (sum + item.value <= commission) {
-          sum += item.value;
+        if (sum + item.Warehouse.price <= commission) {
+          sum += item.Warehouse.price;
         } else {
           items.push(item);
         }
@@ -305,12 +271,14 @@ module.exports.checkStartTime = Promise.coroutine(function* () {
     let curTime =  parseInt(moment(new Date()).format('X'));
 
     if (gameTime <=  curTime && !global[config.app.name].jackpotGame.timeOut) {
-      let _this = this;
-
       global[config.app.name].jackpotGame.timeOut = true;
 
-      _this.choseWinner();
+      _JackpotGames.choseWinner();
 
+    } else {
+      setTimeout(function() {
+        _JackpotGames.checkStartTime();
+      }, 700);
     }
   } catch (err) {
     EL(err);
@@ -319,12 +287,7 @@ module.exports.checkStartTime = Promise.coroutine(function* () {
 
 module.exports.qwe = Promise.coroutine(function* (req, res, next) {
   try {
-    //global[config.app.name].socket.emit('jackpotWinner', {
-    //  winnerId: '76561198262183024'
-    //});
-    global[config.app.name].socket.emit('timeToGame', {
-      gameTime: 120
-    })
+    yield _JackpotGames.choseWinner();
     res.send('ok');
   } catch (err) {
     next(err);

@@ -314,11 +314,9 @@ angular.module('gameApp').controller('mainCtrl', [
 
             $scope.betsGrouped.unshift({
               userId: e[0].userId,
-              avatar: e[0].avatar,
-              name: e[0].username,
-              sum: _.sumBy(e, 'value'),
-              from: _.minBy(e, 'from').from,
-              to: _.maxBy(e, 'to').to,
+              avatar: e[0].User.avatar,
+              name: e[0].User.name,
+              sum: _.sumBy(e, 'Warehouse.price'),
               items: e
             });
           });
@@ -331,7 +329,7 @@ angular.module('gameApp').controller('mainCtrl', [
       var userCost = 0;
       $scope.bets.forEach(function (e) {
         if (e.userId == userId) {
-          userCost += e.value;
+          userCost += e.Warehouse.price;
         }
       });
 
@@ -345,11 +343,9 @@ angular.module('gameApp').controller('mainCtrl', [
       $scope.currentGame = data.gameData;
       $scope.betsGrouped.unshift({
         userId: data.bets[0].userId,
-        avatar: data.bets[0].avatar,
-        name: data.bets[0].username,
-        price: _.sumBy(data.bets, 'cost'),
-        from: _.minBy(data.bets, 'from').from,
-        to: _.maxBy(data.bets, 'to').to,
+        avatar: data.bets[0].User.avatar,
+        name: data.bets[0].User.name,
+        sum: _.sumBy(data.bets, 'Warehouse.price'),
         items: data.bets
       });
       $scope.$apply();
@@ -431,7 +427,7 @@ angular.module('gameApp').controller('mainCtrl', [
       setTimeout(function () {
         var index = _.findIndex($scope.bets, ['userId', winnerId]);
         $scope.winnerChance = $scope.getUserChance(winnerId);
-        $scope.winnerName = $scope.bets[index].username;
+        $scope.winnerName = $scope.bets[index].User.name;
       }, 10000);
 
     }
@@ -452,7 +448,7 @@ angular.module('gameApp').controller('mainCtrl', [
       while (players.length < 100) {
         for (var userId in usersWithBets) {
 
-          var avatar = usersWithBets[userId][0].avatar;
+          var avatar = usersWithBets[userId][0].User.avatar;
           var chance = $scope.getUserChance(userId);
           var avatarCount = parseInt(chance);
 
@@ -482,7 +478,7 @@ angular.module('gameApp').controller('mainCtrl', [
       var index = _.findIndex($scope.bets, ['userId', winnerId]);
       players.splice(81, 0, {
         userId: winnerId,
-        avatar: $scope.bets[index].avatar,
+        avatar: $scope.bets[index].User.avatar,
         chance: $scope.getUserChance(winnerId)
       });
 

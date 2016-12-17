@@ -8,4 +8,4 @@ INSERT INTO "info" ("name", "value") VALUES
 	('gameTime', '120');
 
 INSERT INTO "games" ("id", "startTime", "cost", "winner", "userId", "percent", "itemsnum", "module") VALUES
-  	(1, 2147483647, 0, '', 0, null, 0, '0.85456596562');
+  	(1, 2147483647, 0, null, null, null, 0, '0.85456596562');

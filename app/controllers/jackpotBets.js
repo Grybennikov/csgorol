@@ -25,18 +25,7 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
     if (current) {
       let siteSettings = yield db.Info.list(true);
 
-      result = yield db.JackpotBets.conditionList({
-        where: {
-          gameNumber: siteSettings.current_game
-        }
-      });
-      result = yield Promise.map(result, function(e) {
-        return request.getAsync(e.avatar, null)
-          .then(function(response) {
-            e.avatar =  "data:" + response.headers["content-type"] + ";base64," + new Buffer(response.body).toString('base64');
-            return e;
-          })
-      });
+      result = yield db.JackpotBets.dataList(siteSettings.current_game, {avatar: true});
     } else {
       result = yield db.JackpotBets.conditionList();
     }
@@ -47,8 +36,6 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
   }
 
 });
-
-
 
 /**
  * Create new jackpot bet

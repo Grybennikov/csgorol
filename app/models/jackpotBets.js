@@ -2,6 +2,8 @@
 
 var Promise = require('bluebird');
 var coroutine = Promise.coroutine;
+const request = require('request').defaults({ encoding: null });
+Promise.promisifyAll(request);
 
 module.exports = function (sequelize, DataTypes) {
   var JackpotBets = sequelize.define('JackpotBets', {
@@ -109,7 +111,63 @@ module.exports = function (sequelize, DataTypes) {
 
         return winningBet.get({plain: true});
 
-      })
+      }),
+      dataList: coroutine(function* (gameNumber, options) {
+        options || (options = {});
+        let jackpotBets = yield JackpotBets.findAll({
+          where: {
+            gameNumber: gameNumber
+          },
+          include: [
+            {
+              model: sequelize.models.User,
+              attributes: ['name'],
+              include: {
+                model: sequelize.models.UserData,
+                attributes: ['avatar']
+              }
+            },
+            {
+              model: sequelize.models.Warehouse,
+              attributes: ['name', 'price', 'image']
+            }
+          ],
+          group: [
+            '"JackpotBets"."id"',
+            '"User"."steamId"',
+            '"User"."UserDatum"."steamId"',
+            '"Warehouse"."id"'
+          ],
+          order: '"JackpotBets"."id" DESC'
+        });
+
+        if (options.avatar) {
+          jackpotBets = yield Promise.map(jackpotBets, function(e) {
+            return request.getAsync(e.User.UserDatum.avatar, null)
+              .then(function(response) {
+                e.User.avatar =  "data:" + response.headers["content-type"] + ";base64," + new Buffer(response.body).toString('base64');
+                return e;
+              })
+          });
+        }
+
+        return jackpotBets.map(function (jb) {
+          return {
+            id: jb.id,
+            from: jb.from,
+            to: jb.to,
+            gameNumber: jb.gameNumber,
+            warehouseId: jb.warehouseId,
+            userId: jb.userId,
+            Warehouse: jb.Warehouse && jb.Warehouse.get({plain: true}),
+            User: {
+              avatar: jb.User.avatar,
+              name: jb.User.name
+            }
+          }
+        });
+      }),
+
     }
   });
   return JackpotBets;

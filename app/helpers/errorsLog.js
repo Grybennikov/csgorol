@@ -1,12 +1,12 @@
 "use strict";
 
-var Promise = require('bluebird');
-var path = require('path');
-var fsp = require('fs-promise');
-var moment = require('moment');
+const Promise = require('bluebird');
+const path = require('path');
+const fsp = require('fs-promise');
+const moment = require('moment');
 
-var db = require('../models');
-var config = require('../../config/config');
+const db = require('../models');
+const config = require('../../config/config');
 
 
 /**

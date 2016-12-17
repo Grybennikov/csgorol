@@ -1,9 +1,9 @@
 "use strict";
 
-var express = require('express');
-var router = express.Router();
-var Games = require('../controllers/jackpotGames');
-var passport = require('../policies/passport')
+const express = require('express');
+const router = express.Router();
+const Games = require('../controllers/jackpotGames');
+const passport = require('../policies/passport')
 
 module.exports = function (app) {
   app.use('/api/jackpotGames', router);
