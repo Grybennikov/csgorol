@@ -109,7 +109,7 @@ module.exports = function (sequelize, DataTypes) {
       }),
 
       list: coroutine(function* (condition) {
-        let user = yield User.findAll(condition);
+        let user = yield User.findAll({include: {model: sequelize.models.UserData}});
         return user.map(function (user) {
           return user.get({plain: true})
         });
@@ -117,8 +117,10 @@ module.exports = function (sequelize, DataTypes) {
 
       topPlayers: coroutine(function* () {
         let user = yield User.findAll({
+          attributes: ['name', 'steamId'],
           include: [{
             model: sequelize.models.UserData,
+            attributes: ['totalWins', 'creditsWon', 'avatar']
           }],
           order: '"UserDatum"."creditsWon" DESC',
           limit: 10

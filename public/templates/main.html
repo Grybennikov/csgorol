@@ -4,7 +4,7 @@
            <p class="wrapper-activity-title">Статистика сайта</p>
            <div class="wp-games-today">
                <p class="wp-games-today-title">сегодня игр</p>
-               <p class="wp-games-today-number">{{informer.todayGames}}</p>
+               <p class="wp-games-today-number">{{stats.gamesCount | number : 0}}</p>
            </div>
            <div class="wp-now-onlay">
                <p class="wp-now-onlay-today-title">сейчас онлайн</p>
@@ -12,13 +12,13 @@
            </div>
            <div class="wp-winnings-today">
                <p class="wp-winnings-today-title">выигрыш сегодня</p>
-               <p class="wp-winnings-today-number">{{informer.todayWon | number : 0}} <span>{{currency}}</span></p>
+               <p class="wp-winnings-today-number">{{stats.gamesTotalCost | number : 2}} <span>{{currency}}</span></p>
            </div>
            <div class="clear"></div>
        </div>
        <div class="wrapper-jackpot-main">
            <p class="wrapper-jackpot-main-title">Главный джекпот игры:</p>
-           <div class="wrapper-jackpot-main-sum">{{informer.todayMaxJackpot}} <span>{{currency}}</span></div>
+           <div class="wrapper-jackpot-main-sum">{{maxJackpotInGame | number : 2}} <span>{{currency}}</span></div>
        </div>
        <div class="clear"></div>
    </div>
@@ -98,18 +98,19 @@
             <div class="wrapper-last-winner-description">
                 <p>последний победитель</p>
             </div>
-            <div class="wrapper-last-winner-icon"><a href="{{lastWinner.user.profileurl}}"><img ng-src="{{lastWinner.user.avatarmedium}}"></a></div>
+            <div class="wrapper-last-winner-icon"><a href="{{prevGame.winner.steamId}}">
+                <img ng-src="{{prevGame.winner.avatar}}"></a></div>
             <div class="wrapper-last-winner-chance name">
                 <p class="last-winner-chance-title">Имя:</p>
-                <p class="last-winner-chance-sum"><span class="user-name">{{lastWinner.user.personaname}}</span></p>
+                <p class="last-winner-chance-sum"><span class="user-name">{{prevGame.winner.name}}</span></p>
             </div>
             <div class="wrapper-last-winner-winnings">
                 <p class="last-winner-winnings-title">Выигрыш:</p>
-                <p class="last-winner-winnings-sum"><span>{{lastWinner.jackpot}}</span> {{currency}}</p>
+                <p class="last-winner-winnings-sum"><span>{{prevGame.cost}}</span> {{currency}}</p>
             </div>
             <div class="wrapper-last-winner-chance">
                 <p class="last-winner-chance-title">C шансом:</p>
-                <p class="last-winner-chance-sum"><span>{{lastWinner.chance*100 | number: 2}}</span>%</p>
+                <p class="last-winner-chance-sum"><span>{{prevGame.percent | number: 2}}</span>%</p>
             </div>
         </div>
 
@@ -145,7 +146,7 @@
                 <div class="right">
                     <div class="button" ng-click="reloadInventory()">Обновить</div>
                     <div class="button"><a href="{{infConfig.tradelink}}" target="_blank">Депозит</a></div>
-                    <div class="button" ng-click="put()" style="background-color: red">Подтвердить</div>
+                    <div class="button" ng-click="putBet()" style="background-color: red">Подтвердить</div>
                 </div>
             </div>
 
@@ -279,7 +280,7 @@
                 <div class="clear"></div>
                 <div class="wrapper-list-item-main-page-skins">
                     <div class="list-item-main-page-skins-i" ng-repeat="item in bet.items">
-                        <img ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.image}}">
+                        <img ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.Warehouse.image}}">
                     </div>
                     <div class="clear"></div>
                 </div>

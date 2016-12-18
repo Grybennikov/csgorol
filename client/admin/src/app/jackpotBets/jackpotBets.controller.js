@@ -50,16 +50,13 @@
           },
           {
             dataField: 'userId',
-            caption: 'Winner steam id'
+            caption: 'User steam id'
           },
           {
-            dataField: 'username'
+            dataField: 'Warehouse.name'
           },
           {
-            dataField: 'item'
-          },
-          {
-            dataField: 'value',
+            dataField: 'Warehouse.price',
             caption: 'Item cost ($)'
           },
           {

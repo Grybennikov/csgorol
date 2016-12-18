@@ -9,4 +9,5 @@ module.exports = function (app) {
 };
 
 router
-  .get('/', JackpotBets.listAction);
+  .get('/', JackpotBets.listAction)
+  .post('/', JackpotBets.createAction);

@@ -208,6 +208,7 @@ angular.module('gameApp').controller('mainCtrl', [
       showInventory: false,
       itemsLoading: false
     }
+    $scope.maxJackpotInGame = 0;
 
     //INVENTORY
 
@@ -265,13 +266,9 @@ angular.module('gameApp').controller('mainCtrl', [
         return e.id;
       });
 
-      $http.post('/api/jackpotGame', {betItems: items})
+      $http.post('/api/jackpotBets', {betItems: items})
         .then(function(res){
           $scope.loading = false;
-          ngNotify.set('Success', {
-            type: 'success',
-            duration: 2000
-          });
           $scope.reloadInventory();
         })
         .catch(function(err){
@@ -295,9 +292,11 @@ angular.module('gameApp').controller('mainCtrl', [
           }
         })
         .then(function (data) {
+          $scope.stats = data.data.stats;
           $scope.datas.userOnline = data.data.usersOnline;
           $scope.infConfig = data.data.settings;
           $scope.currentGame = data.data.gameData;
+          $scope.prevGame = data.data.prevGame;
         })
 
       $http.get('/api/jackpotBets/', {
@@ -314,16 +313,16 @@ angular.module('gameApp').controller('mainCtrl', [
 
             $scope.betsGrouped.unshift({
               userId: e[0].userId,
-              avatar: e[0].avatar,
-              name: e[0].username,
-              sum: _.sumBy(e, 'value'),
-              from: _.minBy(e, 'from').from,
-              to: _.maxBy(e, 'to').to,
+              avatar: e[0].User.avatar,
+              name: e[0].User.name,
+              sum: _.sumBy(e, 'Warehouse.price'),
               items: e
             });
           });
-
-          console.log($scope.betsGrouped)
+          if ($scope.bets.length) {
+            $scope.maxJackpotInGame = _.maxBy($scope.bets, 'Warehouse.price')
+            $scope.maxJackpotInGame = $scope.maxJackpotInGame.Warehouse.price;
+          }
         })
     }
 
@@ -331,7 +330,7 @@ angular.module('gameApp').controller('mainCtrl', [
       var userCost = 0;
       $scope.bets.forEach(function (e) {
         if (e.userId == userId) {
-          userCost += e.value;
+          userCost += e.Warehouse.price;
         }
       });
 
@@ -345,13 +344,15 @@ angular.module('gameApp').controller('mainCtrl', [
       $scope.currentGame = data.gameData;
       $scope.betsGrouped.unshift({
         userId: data.bets[0].userId,
-        avatar: data.bets[0].avatar,
-        name: data.bets[0].username,
-        price: _.sumBy(data.bets, 'cost'),
-        from: _.minBy(data.bets, 'from').from,
-        to: _.maxBy(data.bets, 'to').to,
+        avatar: data.bets[0].User.avatar,
+        name: data.bets[0].User.name,
+        sum: _.sumBy(data.bets, 'Warehouse.price'),
         items: data.bets
       });
+      if ($scope.bets.length) {
+        $scope.maxJackpotInGame = _.maxBy($scope.bets, 'Warehouse.price')
+        $scope.maxJackpotInGame = $scope.maxJackpotInGame.Warehouse.price;
+      }
       $scope.$apply();
     });
 
@@ -382,13 +383,22 @@ angular.module('gameApp').controller('mainCtrl', [
             $scope.showRoulette = false;
             $scope.timer = 0;
             winnerID = false;
-            $scope.currentGame.cost = 0;
             $scope.bets = [];
-            $scope.betsGrouped = {};
+            $scope.betsGrouped = [];
             $scope.itemsList = [];
             var roulElement = angular.element(document.getElementsByClassName('qwe'));
             roulElement.css('background-image', 'url()')
             roulElement.removeClass('roulette-template');
+
+
+            //Обновление данных
+            $scope.stats.gamesTotalCost  +=  $scope.currentGame.cost;
+            $scope.stats.gamesCount++;
+            $scope.currentGame.id++;
+            $scope.currentGame.itemsnum = 0;
+            $scope.currentGame.cost = 0;
+            $scope.maxJackpotInGame = 0;
+
             return false;
           } else {
             $scope.newGameTimer -= 1;
@@ -396,6 +406,12 @@ angular.module('gameApp').controller('mainCtrl', [
         })
       }, 1000);
     });
+
+    socket.on('jackpotGamePrevData', function (data) {
+      $scope.$apply(function(){
+        $scope.prevGame = data.data;
+      })
+    })
 
     var imageSize = 75;
     $scope.renderRoulette = function (winnerId) {
@@ -431,7 +447,7 @@ angular.module('gameApp').controller('mainCtrl', [
       setTimeout(function () {
         var index = _.findIndex($scope.bets, ['userId', winnerId]);
         $scope.winnerChance = $scope.getUserChance(winnerId);
-        $scope.winnerName = $scope.bets[index].username;
+        $scope.winnerName = $scope.bets[index].User.name;
       }, 10000);
 
     }
@@ -452,7 +468,7 @@ angular.module('gameApp').controller('mainCtrl', [
       while (players.length < 100) {
         for (var userId in usersWithBets) {
 
-          var avatar = usersWithBets[userId][0].avatar;
+          var avatar = usersWithBets[userId][0].User.avatar;
           var chance = $scope.getUserChance(userId);
           var avatarCount = parseInt(chance);
 
@@ -482,7 +498,7 @@ angular.module('gameApp').controller('mainCtrl', [
       var index = _.findIndex($scope.bets, ['userId', winnerId]);
       players.splice(81, 0, {
         userId: winnerId,
-        avatar: $scope.bets[index].avatar,
+        avatar: $scope.bets[index].User.avatar,
         chance: $scope.getUserChance(winnerId)
       });
 

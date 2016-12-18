@@ -48,8 +48,8 @@
           </div>
           <div data-options="dxTemplate: {name: 'choseWinnerTemplate'}">
             <div style="padding: 2px 0;">
-              <img ng-src="{{avatar}}" style="width: 30px;">
-              {{userId}} - {{username}}
+              <img ng-src="{{User.UserDatum.avatar}}" style="width: 30px;">
+              {{User.UserDatum.setamId}} - {{User.UserDatum.name}}
             </div>
           </div>
         </div>
@@ -60,11 +60,11 @@
 
     <h2>Bot codes: </h2>
     <div class="dx-field">
-      <div class="dx-field-label">Jackpot</div>
+      <div class="dx-field-label">Warehouse</div>
       <div class="dx-field-value-static bots-codes">
         <div class="code" ng-bind="siteSettings.botsCodes.jackpotBot"></div>
         <i class="fa fa-refresh refresh" aria-hidden="true"
-           ng-click="siteSettings.refreshCode('jackpotBot')"></i>
+           ng-click="siteSettings.refreshCode('warehouseBot')"></i>
       </div>
     </div>
   </div>

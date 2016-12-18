@@ -13,11 +13,11 @@
       <li ng-repeat="player in topPlauers">
         <div>{{$index+1}}</div>
         <div>
-          <img ng-src="{{player.avatar}}">
-          <a class="player-name" ng-href="{{player.profileurl}}" target="_blank" data-profile="{{player.steamId}}">{{player.name}}</a>
+          <img ng-src="{{player.UserDatum.avatar}}">
+          <a class="player-name" ng-href="http://steamcommunity.com/profiles/{{player.steamId}}" target="_blank" data-profile="{{player.steamId}}">{{player.name}}</a>
         </div>
-        <div>{{player.games || 0}}</div>
-        <div>{{currency}}{{(player.won || 0) | number : 2 }}</div>
+        <div>{{player.UserDatum.totalWins || 0}}</div>
+        <div>{{currency}}{{(player.UserDatum.creditsWon || 0) | number : 2 }}</div>
       </li>
     </ul>
   </div>

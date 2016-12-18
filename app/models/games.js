@@ -24,12 +24,15 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       defaultValue: 0
     },
-    module: DataTypes.STRING
+    module: DataTypes.STRING,
+    ticket: DataTypes.INTEGER
   }, {
     tableName: 'games',
-    timestamps: false,
     classMethods: {
       associate: function (models) {
+        Games.belongsTo(models.User, {
+          foreignKey: 'userId'
+        });
         Games.hasMany(models.JackpotBets, {
           foreignKey: 'gameNumber'
         });
@@ -76,15 +79,24 @@ module.exports = function (sequelize, DataTypes) {
         });
       }),
 
-      one: coroutine(function* (number) {
-        let games = yield Games.findOne({
+      one: coroutine(function* (number, usersData) {
+        let condition = {
           where: {
             id: number
           },
           include: {
             model: sequelize.models.JackpotBets
           }
-        });
+        }
+
+        if (usersData) {
+          condition.include.include =  {
+            model: sequelize.models.User,
+            include: {model: sequelize.models.UserData}
+          };
+        }
+
+        let games = yield Games.findOne(condition);
         games = games.get ? games.get({plain: true}) : {};
         games.cost = games.cost ? parseFloat(games.cost) : 0;
         return games;
@@ -100,6 +112,37 @@ module.exports = function (sequelize, DataTypes) {
 
       cost: coroutine(function* () {
         return  yield Games.sum('cost');
+      }),
+
+      history: coroutine(function* () {
+        let siteSettings = yield sequelize.models.Info.list(true);
+        let jackpotGames = yield Games.findAll({
+          where: {
+            id: {
+              $not: siteSettings.current_game
+            }
+          },
+          include: [{
+            model: sequelize.models.JackpotBets,
+            attributes: ['warehouseId'],
+            include: {
+              model: sequelize.models.Warehouse,
+              attributes: ['name', 'price', 'image']
+            }
+          }, {
+            model: sequelize.models.User,
+            attributes: ['steamId'],
+            include: {
+              model: sequelize.models.UserData,
+              attributes: ['avatar']
+            }
+          }],
+          order: '"id" DESC',
+          limit: 10
+        });
+        return jackpotGames.map(function (jackpotGames) {
+          return jackpotGames.get({plain: true})
+        });
       })
 
     }

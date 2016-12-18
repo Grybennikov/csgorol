@@ -52,11 +52,11 @@
             caption: LC('USERS.GRID_TITLES.NAME')
           },
           {
-            dataField: 'tlink',
+            dataField: 'UserDatum.tlink',
             caption: LC('USERS.GRID_TITLES.TLINK')
           },
           {
-            dataField: 'avatar',
+            dataField: 'UserDatum.avatar',
             caption: LC('USERS.GRID_TITLES.AVATAR')
           }
         ],
