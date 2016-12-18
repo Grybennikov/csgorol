@@ -42,7 +42,7 @@ var config = {
     siteName: 'CSGO.in',
     siteDomain: 'http://lottgame.com',
     port: process.env.PORT || 80,
-    db: 'postgres://postgres:@localhost/csgoroll',
+    db: 'postgres://csgoin:vfd98H9K0df@localhost/csgoroll',
     steam: {
       currency: 1,
       gameId: 730,
