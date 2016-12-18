@@ -91,17 +91,22 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
       db.Info.editByName('current_game', siteSettings.current_game + 1)
     ]);
 
-
     setTimeout(function() {
       global[config.app.name].startTime = moment(new Date()).add(100, 'years').toDate();
       global[config.app.name].jackpotGame.timeOut = false;
       global[config.app.name].jackpotGame.number++;
       global[config.app.name].jackpotGame.gameStarted = false;
-      global[config.app.name].jackpotGame.prevData = {
-        gameData: result.editGame,
-        winner: winner,
-        bets: gameBets
-      };
+      Promise.props({
+        gameData: db.Games.one(siteSettings.current_game),
+        winner: db.User.one(winningSteamId)
+      })
+        .then(function(data) {
+          global[config.app.name].jackpotGame.prevData = data;
+          global[config.app.name].socket.emit('jackpotGamePrevData', {
+            data: getPrevData()
+          });
+        })
+
     }, 10000);
 
     return winningSteamId;
@@ -179,6 +184,28 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
       let gameNumber = parseInt(siteSettings.current_game);
 
       let jackpotGame = yield db.Games.one(gameNumber);
+      let stats = yield Promise.props({
+        gamesCount: db.Games.count({
+          where: {
+            createdAt: {
+              $and: {
+                $gt: moment().startOf('day').toDate(),
+                $lt: moment().endOf('day').toDate()
+              }
+            }
+          }
+        }),
+        gamesTotalCost: db.Games.sum('cost', {
+          where: {
+            createdAt: {
+              $and: {
+                $gt: moment().startOf('day').toDate(),
+                $lt: moment().endOf('day').toDate()
+              }
+            }
+          }
+        })
+      });
 
       let totalPaid = yield db.Games.cost();
 
@@ -196,40 +223,19 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
         }
       }
 
-      //let prevGame = {
-      //  number: global.jackpotGame.prevData.gameData.number,
-      //  module: global.jackpotGame.prevData.gameData.module,
-      //  ticket: global.jackpotGame.prevData.gameData.ticket,
-      //  bets: global.jackpotGame.prevData.bets,
-      //  winner: {
-      //    name: global.jackpotGame.prevData.gameData.winner,
-      //    avatar: global.jackpotGame.prevData.winner.avatar,
-      //    steamId: global.jackpotGame.prevData.gameData.userId,
-      //  }
-      //};
-
       result = {
         usersOnline: global.usersOnline,
+        stats: stats,
         totalPaid: totalPaid,
         settings: siteSettings,
-        gameData: jackpotGame
+        gameData: jackpotGame,
+        prevGame: getPrevData()
       };
     } else {
       if (req.session.isAdmin) {
         result = yield db.Games.list();
       } else {
-        result = yield db.Games.list({
-          where: {
-            winner: {
-              $not: null
-            }
-          },
-          include: {
-            model: db.JackpotBets
-          },
-          limit: 10,
-          order: 'id'
-        });
+        result = yield db.Games.history();
       }
     }
 
@@ -275,11 +281,10 @@ module.exports.checkStartTime = Promise.coroutine(function* () {
 
       _JackpotGames.choseWinner();
 
-    } else {
-      setTimeout(function() {
+    }
+    setTimeout(function() {
         _JackpotGames.checkStartTime();
       }, 700);
-    }
   } catch (err) {
     EL(err);
   }
@@ -293,3 +298,20 @@ module.exports.qwe = Promise.coroutine(function* (req, res, next) {
     next(err);
   }
 });
+
+function getPrevData() {
+  return {
+    number: global[config.app.name].jackpotGame.prevData.gameData.id,
+    module: global[config.app.name].jackpotGame.prevData.gameData.module,
+    ticket: global[config.app.name].jackpotGame.prevData.gameData.ticket,
+    percent: global[config.app.name].jackpotGame.prevData.gameData.percent,
+    itemsnum: global[config.app.name].jackpotGame.prevData.gameData.itemsnum,
+    cost: global[config.app.name].jackpotGame.prevData.gameData.cost,
+    //bets: global[config.app.name].jackpotGame.prevData.JackpotBets,
+    winner: {
+      name: global[config.app.name].jackpotGame.prevData.gameData.winner,
+      avatar: global[config.app.name].jackpotGame.prevData.winner.avatar,
+      steamId: global[config.app.name].jackpotGame.prevData.gameData.userId,
+    }
+  };
+}

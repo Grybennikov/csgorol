@@ -66,7 +66,7 @@ module.exports.updateAction = Promise.coroutine(function* (req, res, next) {
     if (admin) {
        result = yield db.User.edit(id,req.body);
     } else {
-       result = yield db.User.edit(id, {tlink: req.body.tlink});
+       result = yield db.UserData.edit(id, {tlink: req.body.tlink});
     }
     res.send(result);
   } catch (err) {
@@ -74,34 +74,9 @@ module.exports.updateAction = Promise.coroutine(function* (req, res, next) {
   }
 });
 
-module.exports.updateDiceFairAction = Promise.coroutine(function* (req, res, next) {
-  try {
-    if (req.body.newSeeders) {
-      let userDiceFair = yield db.DiceFair.current(req.user.id);
-
-      yield Promise.all([
-        db.DiceFair.edit(req.user.id, {current: false}),
-        db.DiceFair.add({
-          steamId: req.user.id,
-          clientSeed: Math.random().toString(36),
-          serverSeed: Math.random().toString(12),
-          current: true
-        })
-      ]);
-
-    }
-    res.sendStatus(200);
-  } catch (err) {
-    next(err);
-  }
-});
-
 module.exports.topAction = Promise.coroutine(function* (req, res, next) {
   try {
-    let result = yield db.User.list({
-      order: '`won` DESC',
-      limit: 10
-    });
+    let result = yield db.User.topPlayers();
     res.send(result);
   } catch (err) {
     next(err);

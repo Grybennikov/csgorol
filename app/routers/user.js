@@ -40,7 +40,4 @@ router
 
   .get('/:id', passport.isAdmin, User.oneAction)
 
-  .put('/:id', passport.isApiAuthenticated, User.updateAction)
-
-  .put('/:id/diceFair', passport.isApiAuthenticated, User.updateDiceFairAction);
-
+  .put('/:id', passport.isApiAuthenticated, User.updateAction);

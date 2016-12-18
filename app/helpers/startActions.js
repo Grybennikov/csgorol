@@ -64,4 +64,20 @@ module.exports = function () {
 
   JackpotGame.checkStartTime();
 
+  db.Info.list(true)
+    .then(function(siteSettings) {
+      return db.Games.one(siteSettings.current_game  - 1)
+    })
+    .then(function(data) {
+      global[config.app.name].jackpotGame.prevData.gameData = data;
+      return db.User.one(data.userId)
+    })
+    .then(function(data) {
+      global[config.app.name].jackpotGame.prevData.winner = data;
+    })
+    .catch(function(err) {
+      console.log(err)
+    })
+
+
 }

@@ -12,23 +12,5 @@ angular.module('gameApp').controller('historyCtrl',
         console.log(data);
         $scope.history = data;
       })
-
-
-
-	// if ($scope.datas.hideSdbr === 1) {
-	// 	$scope.datas.hideSdbr = 0;
-	// };
-
-	// if ($scope.datas.centerFull = 'full-width') {
-	// 	$scope.datas.centerFull = '';
-	// };
-
-	$scope.hoverIn = function(){
-       this.hoverEdit = true;
-    };
-
-    $scope.hoverOut = function(){
-        this.hoverEdit = false;
-    };
 });
 

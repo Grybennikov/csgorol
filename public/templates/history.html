@@ -28,18 +28,20 @@
                    <div class="wp-list-item-player-history">
                      <ul>
                       <li ng-repeat="thing in game.JackpotBets | orderBy: 'info[0].price' ">
-                        <a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.image }}/85fx70f" data-title="{{ thing.item }}" data-price="~ {{ thing.value | number : 2 }}" style="position:relative;">
-                          <img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.image }}/85fx70f" alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
+                        <a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.image }}/85fx70f"
+                           data-title="{{ thing.Warehouse.name }}" data-price="~ {{ thing.Warehouse.price | number : 2 }}" style="position:relative;">
+                          <img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f"
+                               alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
                           <div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">
                             <div class="history-item-prize-drop-top">
-                              <div class="history-item-prize-drop-left" style="background: {{ thing.info[0].description.background_color }};">
+                              <div class="history-item-prize-drop-left" style="background: transparent;">
                                 <div class="history-item-prize-drop-image">
-                                  <img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.info[0].description.icon_url }}/85fx70f" alt="image">
+                                  <img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f" alt="image">
                                 </div>
                               </div>
                               <div class="history-item-prize-drop-top-inner">
-                                <div class="history-item-prize-drop-title">{{ thing.info[0].description.name }}</div>
-                                <div class="history-item-prize-drop-price">~ {{ thing.info[0].price | number : 2 }} {{currency}}</div>
+                                <div class="history-item-prize-drop-title">{{ thing.Warehouse.name }}</div>
+                                <div class="history-item-prize-drop-price">~ {{ thing.Warehouse.price | number : 2 }} {{currency}}</div>
                               </div>
                             </div>
                           </div>

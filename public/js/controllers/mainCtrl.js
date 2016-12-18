@@ -208,6 +208,7 @@ angular.module('gameApp').controller('mainCtrl', [
       showInventory: false,
       itemsLoading: false
     }
+    $scope.maxJackpotInGame = 0;
 
     //INVENTORY
 
@@ -268,10 +269,6 @@ angular.module('gameApp').controller('mainCtrl', [
       $http.post('/api/jackpotBets', {betItems: items})
         .then(function(res){
           $scope.loading = false;
-          ngNotify.set('Success', {
-            type: 'success',
-            duration: 2000
-          });
           $scope.reloadInventory();
         })
         .catch(function(err){
@@ -295,9 +292,11 @@ angular.module('gameApp').controller('mainCtrl', [
           }
         })
         .then(function (data) {
+          $scope.stats = data.data.stats;
           $scope.datas.userOnline = data.data.usersOnline;
           $scope.infConfig = data.data.settings;
           $scope.currentGame = data.data.gameData;
+          $scope.prevGame = data.data.prevGame;
         })
 
       $http.get('/api/jackpotBets/', {
@@ -320,8 +319,10 @@ angular.module('gameApp').controller('mainCtrl', [
               items: e
             });
           });
-
-          console.log($scope.betsGrouped)
+          if ($scope.bets.length) {
+            $scope.maxJackpotInGame = _.maxBy($scope.bets, 'Warehouse.price')
+            $scope.maxJackpotInGame = $scope.maxJackpotInGame.Warehouse.price;
+          }
         })
     }
 
@@ -348,6 +349,10 @@ angular.module('gameApp').controller('mainCtrl', [
         sum: _.sumBy(data.bets, 'Warehouse.price'),
         items: data.bets
       });
+      if ($scope.bets.length) {
+        $scope.maxJackpotInGame = _.maxBy($scope.bets, 'Warehouse.price')
+        $scope.maxJackpotInGame = $scope.maxJackpotInGame.Warehouse.price;
+      }
       $scope.$apply();
     });
 
@@ -378,13 +383,22 @@ angular.module('gameApp').controller('mainCtrl', [
             $scope.showRoulette = false;
             $scope.timer = 0;
             winnerID = false;
-            $scope.currentGame.cost = 0;
             $scope.bets = [];
-            $scope.betsGrouped = {};
+            $scope.betsGrouped = [];
             $scope.itemsList = [];
             var roulElement = angular.element(document.getElementsByClassName('qwe'));
             roulElement.css('background-image', 'url()')
             roulElement.removeClass('roulette-template');
+
+
+            //Обновление данных
+            $scope.stats.gamesTotalCost  +=  $scope.currentGame.cost;
+            $scope.stats.gamesCount++;
+            $scope.currentGame.id++;
+            $scope.currentGame.itemsnum = 0;
+            $scope.currentGame.cost = 0;
+            $scope.maxJackpotInGame = 0;
+
             return false;
           } else {
             $scope.newGameTimer -= 1;
@@ -392,6 +406,12 @@ angular.module('gameApp').controller('mainCtrl', [
         })
       }, 1000);
     });
+
+    socket.on('jackpotGamePrevData', function (data) {
+      $scope.$apply(function(){
+        $scope.prevGame = data.data;
+      })
+    })
 
     var imageSize = 75;
     $scope.renderRoulette = function (winnerId) {

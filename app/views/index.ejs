@@ -66,16 +66,15 @@
 
           <div class="wrapper-profil-button">
             <ul>
-              <!--<li><a ng-click="openProfileModal()">Профиль</a></li>-->
               <li><a href="#/my/inventory">Инвентарь</a></li>
-              <!--<li><a href="#/my/history">История</a></li>-->
             </ul>
             <div class="clear"></div>
           </div>
 
           <div class="wrapper-link">
             <button type="submit" class="wrapper-link-button-i" ng-click="saveTradeLink()"></button>
-            <input rel="get-trade-link" type="text" name="link" placeholder="Введите ссылку..." class="wrapper-link-input-i" ng-model="auth.tradelink" ng-value="{{auth.tradelink}}">
+            <input rel="get-trade-link" type="text" name="link" placeholder="Введите ссылку..." class="wrapper-link-input-i"
+                   ng-model="auth.tradelink">
 
             <a class="wrapper-link-i" href="http://steamcommunity.com/id/id/tradeoffers/privacy#trade_offer_access_url" target="_blank"><img src="img/znak.png" alt="question"></a>
           </div>
@@ -110,6 +109,7 @@
   <% if (user) { %>
   var authInit = {
     'steamid' : '<%- user.userData.steamId%>',
+    'tradelink' : '<%- user.userData.tlink%>',
     'personaname' : '<%- user.userData.name%>',
     'profileurl' : '<%- user._json.profileurl %>',
     'avatar' : '<%- user._json.avatar %>',
