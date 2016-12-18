@@ -79,15 +79,24 @@ module.exports = function (sequelize, DataTypes) {
         });
       }),
 
-      one: coroutine(function* (number) {
-        let games = yield Games.findOne({
+      one: coroutine(function* (number, usersData) {
+        let condition = {
           where: {
             id: number
           },
           include: {
             model: sequelize.models.JackpotBets
           }
-        });
+        }
+
+        if (usersData) {
+          condition.include.include =  {
+            model: sequelize.models.User,
+            include: {model: sequelize.models.UserData}
+          };
+        }
+
+        let games = yield Games.findOne(condition);
         games = games.get ? games.get({plain: true}) : {};
         games.cost = games.cost ? parseFloat(games.cost) : 0;
         return games;

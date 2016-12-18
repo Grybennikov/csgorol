@@ -27,7 +27,11 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
 
       result = yield db.JackpotBets.dataList(siteSettings.current_game, {avatar: true});
     } else {
-      result = yield db.JackpotBets.conditionList();
+      if (req.session.isAdmin) {
+        result = yield db.JackpotBets.conditionList({include: db.Warehouse});
+      } else {
+        result = [];
+      }
     }
 
     res.send(result);

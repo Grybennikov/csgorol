@@ -109,7 +109,7 @@ module.exports = function (sequelize, DataTypes) {
       }),
 
       list: coroutine(function* (condition) {
-        let user = yield User.findAll(condition);
+        let user = yield User.findAll({include: {model: sequelize.models.UserData}});
         return user.map(function (user) {
           return user.get({plain: true})
         });

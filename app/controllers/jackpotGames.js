@@ -183,7 +183,7 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
       let siteSettings = yield db.Info.list(true);
       let gameNumber = parseInt(siteSettings.current_game);
 
-      let jackpotGame = yield db.Games.one(gameNumber);
+      let jackpotGame = yield db.Games.one(gameNumber, req.session.isAdmin);
       let stats = yield Promise.props({
         gamesCount: db.Games.count({
           where: {
