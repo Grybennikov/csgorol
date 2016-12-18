@@ -40,14 +40,14 @@ var config = {
       name: 'steam-jackpot-bot'
     },
     siteName: 'CSGO.in',
-    siteDomain: 'http://5.187.3.224:3000',
-    port: process.env.PORT || 3000,
-    db: 'mysql://root:kls5jSiuLrWz8@localhost/csgorol',
+    siteDomain: 'http://lottgame.com',
+    port: process.env.PORT || 80,
+    db: 'postgres://csgoin:vfd98H9K0df@localhost/csgoroll',
     steam: {
       currency: 1,
       gameId: 730,
       contextId: 2,
-      returnUrl: 'http://5.187.3.224:3000/auth/steam/return',
+      returnUrl: 'http://lottgame.com/auth/steam/return',
       APIKey: 'C9EFB609826DE7E5AFCB0CAF5D92F320',
       jackpotBot: {
         sharedSecret: 'MAVlSd7ftsXwOria3UdH6+7Ls6U=',
