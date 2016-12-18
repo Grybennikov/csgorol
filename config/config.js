@@ -49,7 +49,13 @@ var config = {
       contextId: 2,
       returnUrl: 'http://lottgame.com/auth/steam/return',
       APIKey: 'C9EFB609826DE7E5AFCB0CAF5D92F320',
-      jackpotBot: {
+       warehouseBot: {
+        sharedSecret: 'MAVlSd7ftsXwOria3UdH6+7Ls6U=',
+        identitySecret: "PuQ5TJdWEL+1WydKZpsuQdXzCQY=",
+        accountName: 'fastspeed222',
+        password: 'gktyybrdtnhf'
+      },
+      mainAccount: {
         sharedSecret: 'MAVlSd7ftsXwOria3UdH6+7Ls6U=',
         identitySecret: "PuQ5TJdWEL+1WydKZpsuQdXzCQY=",
         accountName: 'fastspeed222',
