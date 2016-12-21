@@ -50,23 +50,6 @@
     }
 
     /**
-     * Function makes request to back-end for update item
-     * @param itemData
-     * @param updatedItemData
-     * @returns {*}
-     */
-    function editItem (itemData, updatedItemData) {
-      return $http.put('/api/item/' + encodeURIComponent(itemData.id), updatedItemData)
-        .then(function (res) {
-          $window.DevExpress.ui.notify(LC('COMMON.SUCCESS.UPDATE'), "success", 1000);
-          return res.data;
-        })
-        .catch(function(err) {
-          ErrorMessages.process(err);
-        });
-    }
-
-    /**
      * Function makes request to back-end for add item
      * @param itemData
      * @returns {*}
@@ -83,25 +66,8 @@
         });
     }
 
-    /**
-     * Function makes request to back-end for remove item
-     * @param employeeId
-     * @returns {*}
-     */
-    function removeItem(id) {
-      return $http.delete('/api/item/' + encodeURI(id))
-        .then(function (res) {
-          return res.data;
-        })
-        .catch(function (err) {
-          ErrorMessages.process(err);
-        });
-    }
-
     _Items.itemsStore = itemsStore;
     _Items.list = listItem;
     _Items.add = addItem;
-    _Items.edit = editItem;
-    _Items.remove = removeItem;
   }
 })();

@@ -128,7 +128,8 @@ module.exports.createAction = Promise.coroutine(function* (req, res, next) {
 
     let createdBets = yield db.JackpotBets.addBet(betItems);
     yield db.Warehouse.update({
-      ownerId: Sequelize.col('"botId"')
+      ownerId: Sequelize.col('"botId"'),
+      forSale: false
     },{
       where: {
         id: {

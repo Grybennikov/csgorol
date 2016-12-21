@@ -20,8 +20,11 @@
     vm.settings.gameTime      = parseInt(settings.gameTime);
     vm.settings.tradeLink     = settings.tradelink;
 
+    vm.tradeLink = '';
+
     vm.botsCodes = {
-      jackpotBot: '----'
+      jackpotBot: '----',
+      warehouseBot: '----'
     };
 
     vm.SiteSettings = SiteSettings;
@@ -137,6 +140,21 @@
           JackpotGames.edit(jackpotGame.gameData, {userId: ''})
             .then(function(){
               vm.stateReload()
+            })
+        }
+      },
+      withdrawLink: {
+        width: 500,
+        bindingOptions: {
+          value: 'siteSettings.tradeLink'
+        }
+      },
+      withdrawButton: {
+        text: 'Withdraw',
+        onClick: function(){
+          SiteSettings.withdraw(vm.tradeLink)
+            .then(function(){
+              $window.DevExpress.ui.notify('Скины успешно отправлены', "success", 1000);
             })
         }
       }

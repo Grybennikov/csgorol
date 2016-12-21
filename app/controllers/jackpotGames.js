@@ -30,6 +30,10 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
 
     let game = result.game;
     var gameBets = result.gameBets;
+    let gameItems = gameBets.map(function (bet) {
+      return bet.warehouseId;
+    });
+
     //Формирование списка выигрыша
     let winningItems = getItemsForUser(gameBets, siteSettings.rake);
 
@@ -87,6 +91,7 @@ module.exports.choseWinner = Promise.coroutine(function* (req, res, next) {
     });
 
     yield Promise.all([
+      db.Warehouse.update({forSale: true}, {where: {id: {$in: gameItems}}}),
       db.UserData.creditsWonEdit(winningSteamId, game.cost, 1),
       db.Info.editByName('current_game', siteSettings.current_game + 1)
     ]);

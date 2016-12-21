@@ -86,21 +86,14 @@ module.exports = function (sequelize, DataTypes) {
         });
       }),
 
-      marketList: coroutine(function* (admin) {
+      botItems: coroutine(function* (withdraw) {
         let where = {
           ownerId: {
             $col: '"Warehouse"."botId"'
-          }
+          },
+          forSale: true
         };
-        if (!admin) {
-          where.forSale = true;
-        }
-        let warehouse = yield Warehouse.findAll({where:where});
-        return warehouse.map(function (w) {
-          w.price += w.price * 0.1;
-          w.price = parseFloat(w.price.toFixed(2));
-          return w.get({plain: true})
-        });
+        return yield Warehouse.findAll({where:where});
       }),
 
       one: coroutine(function* (id) {

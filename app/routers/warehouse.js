@@ -12,4 +12,5 @@ module.exports = function (app) {
 router
 
   .get('/',           passport.isApiAuthenticated,  Warehouse.listAction)
-  .post('/withdraw',  passport.isApiAuthenticated,  Warehouse.withdrawAction);
+  .post('/withdraw',  passport.isApiAuthenticated,  Warehouse.withdrawAction)
+  .post('/withdraw/admin',  /*passport.isAdmin,*/       Warehouse.adminWithdraw);

@@ -106,6 +106,16 @@
         });
     }
 
+    function withdraw(link) {
+      return $http.post('/api/warehouse/withdraw/admin', {link: link})
+        .then(function (res) {
+          return res.data;
+        })
+        .catch(function (err) {
+          ErrorMessages.process(err);
+        });
+    }
+
     _SiteSettings.siteSettingsStore = siteSettingsStore;
     _SiteSettings.list = listSiteSettings;
     _SiteSettings.add = addSiteSettings;
@@ -113,5 +123,7 @@
     _SiteSettings.remove = removeSiteSettings;
 
     _SiteSettings.refresh2fCode = refresh2fCode;
+
+    _SiteSettings.withdraw = withdraw;
   }
 })();

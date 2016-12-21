@@ -49,7 +49,7 @@
           <div data-options="dxTemplate: {name: 'choseWinnerTemplate'}">
             <div style="padding: 2px 0;">
               <img ng-src="{{User.UserDatum.avatar}}" style="width: 30px;">
-              {{User.UserDatum.setamId}} - {{User.UserDatum.name}}
+              {{User.steamId}} - {{User.name}}
             </div>
           </div>
         </div>
@@ -57,12 +57,19 @@
         <div dx-button="siteSettings.UI.resetWinnerButton"></div>
       </div>
     </div>
+    <div class="dx-field">
+      <div class="dx-field-label">Withdtaw items: </div>
+      <div class="dx-field-value-static" style="width: inherit;">
+        <div dx-text-box="siteSettings.UI.withdrawLink" style="float: left;"></div>
+        <div dx-button="siteSettings.UI.withdrawButton"></div>
+      </div>
+    </div>
 
     <h2>Bot codes: </h2>
     <div class="dx-field">
       <div class="dx-field-label">Warehouse</div>
       <div class="dx-field-value-static bots-codes">
-        <div class="code" ng-bind="siteSettings.botsCodes.jackpotBot"></div>
+        <div class="code" ng-bind="siteSettings.botsCodes.warehouseBot"></div>
         <i class="fa fa-refresh refresh" aria-hidden="true"
            ng-click="siteSettings.refreshCode('warehouseBot')"></i>
       </div>
