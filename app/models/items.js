@@ -88,8 +88,7 @@ module.exports = function (sequelize, DataTypes) {
           }
         }
 
-        yield Items.upsert(
-          {
+        yield Items.upsert({
             name: itemName,
             cost: itemPrice,
             lastupdate: moment(new Date()).format('x')
@@ -123,7 +122,30 @@ module.exports = function (sequelize, DataTypes) {
         });
 
         return item ? item.name : item;
-      })
+      }),
+
+      getSteamLyticsCost: coroutine(function* (itemName) {
+        let url = encodeURI('http://api.csgo.steamlytics.xyz/v1/prices/' + itemName + '?key=' + config.steam.anylystApiKey);
+        let res = yield  request(url);
+        if (res.statusCode != 200) {
+          return {
+            type: 'itemNotFound',
+            msg: 'Нет такого предмета на ТП'
+          };
+        }
+        let costs = JSON.parse(res.body);
+        let itemPrice = costs.median_price || costs.lowest_price;
+
+        itemPrice = parseFloat(itemPrice);
+
+        yield Items.upsert({
+          name: itemName,
+          cost: itemPrice,
+          lastupdate: moment(new Date()).format('x')
+        });
+
+        return itemPrice;
+      }),
 
     }
   });

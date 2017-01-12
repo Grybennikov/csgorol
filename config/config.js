@@ -17,6 +17,7 @@ var config = {
       currency: 1,
       gameId: 730,
       contextId: 2,
+      anylystApiKey: 'cf2166df8b5401f07218a88f39561b7f',
       returnUrl: 'http://localhost:3002/auth/steam/return',
       APIKey: 'E201120407FB3A62C13298A720E9828F',
       warehouseBot: {

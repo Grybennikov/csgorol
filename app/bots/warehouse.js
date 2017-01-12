@@ -52,7 +52,7 @@ module.exports = function (accountSettings) {
         return Promise.coroutine(function* () {
           try {
             Promise.promisifyAll(offer);
-            //return yield offer.acceptAsync();
+            //console.log('accepted'); return yield offer.acceptAsync();
 
             let userId = offer.partner.getSteamID64();
             let botId  = steamUser.steamID.getSteamID64();
@@ -79,19 +79,21 @@ module.exports = function (accountSettings) {
                 anotherGame = true;
               }
 
-              return db.Items.getSteamItemCost(e.market_name)
+              return db.Items.getSteamLyticsCost(e.market_name)
                 .then(function (cost) {
-                  depositSum += cost;
-                  depositItems.push({
-                    steamId: e.id || e.assetid,
-                    instanceId: e.instanceid,
-                    classId: e.classid,
-                    ownerId: userId,
-                    botId: botId,
-                    name: e.market_name,
-                    price: cost,
-                    image: e.icon_url
-                  })
+                  if (!isNaN(cost)) {
+                    depositSum += cost;
+                    depositItems.push({
+                      steamId: e.id || e.assetid,
+                      instanceId: e.instanceid,
+                      classId: e.classid,
+                      ownerId: userId,
+                      botId: botId,
+                      name: e.market_name,
+                      price: cost,
+                      image: e.icon_url
+                    })
+                  }
                   return cost;
                 });
             });
