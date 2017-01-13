@@ -149,7 +149,7 @@ module.exports.createAction = Promise.coroutine(function* (req, res, next) {
     global[config.app.name].socket.emit('jackpotGameData', {cost: gameData.cost});
     let startTime = false;
 
-    let timeToGame = playersNumber > 1 && (gameTime > curTime);
+    let timeToGame = playersNumber > 1 && (gameTime > curTime && !global[config.app.name].jackpotGame.gameStarted);
     if (timeToGame) {
       startTime = siteSettings.gameTime;
       global[config.app.name].jackpotGame.startTime = moment(new Date()).add(siteSettings.gameTime, 'second').toDate();
