@@ -39,6 +39,14 @@ app.config(function ($routeProvider) {
 			templateUrl : './templates/my-inventory.html',
 			controller : 'myInventoryCtrl'
 		})
+		.when('/support', {
+			templateUrl : './templates/support.html',
+			controller : 'supportCtrl'
+		})
+		.when('/faq', {
+			templateUrl : './templates/faq.html',
+			controller : 'faqCtrl'
+		})
 		.otherwise({
 			redirectTo : '/'
 		})

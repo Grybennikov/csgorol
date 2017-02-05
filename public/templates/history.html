@@ -1,11 +1,11 @@
-<div class="wp-central-content-history">
-           <h2 class="title-top-history">История</h2>
+<div class="wp-central-content">
+           <h2 class="title-top">История</h2>
             <div class="wrapper-list-history-block">
                 <div class="list-history-block-i" ng-repeat="game in history | toArray | orderBy: '-id'">
                     <div class="list-history-block-i-top-info">
                         <span class="history-block-i-top-info-left-title" >Игра #</span>
                         <span class="history-block-i-top-info-left-number">{{game.id}}</span>
-                        <span><a href="/#/game/{{game.id}}" class="full-my-history">(посмотреть полную версию игры)</a></span>
+                        <!--<span><a href="/#/game/{{game.id}}" class="full-my-history">(посмотреть полную версию игры)</a></span>-->
                         <span class="status-prize">Выигрыш отправлен</span>
                     </div>
                  <div class="list-history-block-i-content-player">
@@ -25,30 +25,30 @@
                      <div class="clear"></div>
                    </div>
 
-                   <div class="wp-list-item-player-history">
-                     <ul>
-                      <li ng-repeat="thing in game.JackpotBets | orderBy: 'info[0].price' ">
-                        <a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.image }}/85fx70f"
-                           data-title="{{ thing.Warehouse.name }}" data-price="~ {{ thing.Warehouse.price | number : 2 }}" style="position:relative;">
-                          <img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f"
-                               alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
-                          <div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">
-                            <div class="history-item-prize-drop-top">
-                              <div class="history-item-prize-drop-left" style="background: transparent;">
-                                <div class="history-item-prize-drop-image">
-                                  <img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f" alt="image">
-                                </div>
-                              </div>
-                              <div class="history-item-prize-drop-top-inner">
-                                <div class="history-item-prize-drop-title">{{ thing.Warehouse.name }}</div>
-                                <div class="history-item-prize-drop-price">~ {{ thing.Warehouse.price | number : 2 }} {{currency}}</div>
-                              </div>
-                            </div>
-                          </div>
-                        </a>
-                      </li>
-                     </ul>
-                     <div class="clear"></div>
-                   </div>
+                   <!--<div class="wp-list-item-player-history">-->
+                     <!--<ul>-->
+                      <!--<li ng-repeat="thing in game.JackpotBets | orderBy: 'info[0].price' ">-->
+                        <!--<a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.image }}/85fx70f"-->
+                           <!--data-title="{{ thing.Warehouse.name }}" data-price="~ {{ thing.Warehouse.price | number : 2 }}" style="position:relative;">-->
+                          <!--<img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f"-->
+                               <!--alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">-->
+                          <!--<div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">-->
+                            <!--<div class="history-item-prize-drop-top">-->
+                              <!--<div class="history-item-prize-drop-left" style="background: transparent;">-->
+                                <!--<div class="history-item-prize-drop-image">-->
+                                  <!--<img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ thing.Warehouse.image }}/85fx70f" alt="image">-->
+                                <!--</div>-->
+                              <!--</div>-->
+                              <!--<div class="history-item-prize-drop-top-inner">-->
+                                <!--<div class="history-item-prize-drop-title">{{ thing.Warehouse.name }}</div>-->
+                                <!--<div class="history-item-prize-drop-price">~ {{ thing.Warehouse.price | number : 2 }} {{currency}}</div>-->
+                              <!--</div>-->
+                            <!--</div>-->
+                          <!--</div>-->
+                        <!--</a>-->
+                      <!--</li>-->
+                     <!--</ul>-->
+                     <!--<div class="clear"></div>-->
+                   <!--</div>-->
                  </div>
                 </div>

@@ -2534,19 +2534,6 @@ width: 95%;
   margin-top: 10px;
 }
 
-.winner-cost-value {
-  font-size: 19px;
-  margin: 0px 1px 0px 2px;
-  letter-spacing: 1px;
-  color: #fff;
-  font-weight: 700;
-  vertical-align: middle;
-  background: #d44b49;
-  padding: 1px 8px;
-  position: relative;
-  top: -1px;
-}
-
 .winner-cost-value:before {
   content: '';
   position: absolute;
@@ -3749,24 +3736,28 @@ background: #2b2f3c;
 }
 
 .game-end-winner {
-	font-size: 16px;
-	background: #c9c9c7;
-	padding: 12px 21px 12px 27px;
-	position: relative;
-	width: 95%;
-	line-height: 1px;
+    font-size: 0;
+    background: #525252;
+    padding: 40px 0px;
+    position: relative;
+    width: 100%;
+    line-height: 1px;
 }
 .game-end-winner span {
-	display: block;
+	display: inline-block;
 }
 
 .game-end-winner strong {
-	font-weight: bold;
+    color: #f99900;
 }
 
 .game-end-winner-name, .game-end-winner-chance, .game-end-winner-money {
-    font: 18px 'opensans-regular';
-    color: #151515;
+    font: 14px Helvetica;
+    width: 33%;
+    text-align: center;
+    display: inline-block;
+    font-weight: 100;
+    color: #c3c3c3;
 }
 
 .game-in-history .game-end-winner {

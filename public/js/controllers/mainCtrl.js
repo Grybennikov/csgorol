@@ -248,6 +248,39 @@ angular.module('gameApp').controller('mainCtrl', [
           })
         });
     }
+    $scope.withdraw = function () {
+      let items = $scope.inventoryItems.filter(function(item) {
+        return item.selected
+      });
+
+      if (!items.length) {
+        return ngNotify.set('Select the skins!!!', {
+          type: 'error',
+          duration: 2000
+        })
+      }
+      $scope.loading = true;
+
+      items = items.map(function(e){
+        return e.steamId;
+      });
+
+      Warehouse.withdraw(items)
+          .then(function(res){
+            $scope.loading = false;
+            ngNotify.set('Success', {
+              type: 'success',
+              duration: 2000
+            });
+            $scope.reloadInventory();
+          })
+          .catch(function(err){
+            ngNotify.set(err.data.msg  || 'Server Error', {
+              type: 'error',
+              duration: 2000
+            })
+          })
+    }
 
     $scope.putBet = function () {
       let items = $scope.inventoryItems.filter(function(item) {
@@ -281,11 +314,10 @@ angular.module('gameApp').controller('mainCtrl', [
 
 
     //INVENTORY
-
+    $scope.reloadInventory();
     $scope.betsGrouped = [];
     loadFirstData();
     function loadFirstData() {
-
       $http.get('/api/jackpotGames/', {
           params: {
             current: true
@@ -297,6 +329,7 @@ angular.module('gameApp').controller('mainCtrl', [
           $scope.infConfig = data.data.settings;
           $scope.currentGame = data.data.gameData;
           $scope.prevGame = data.data.prevGame;
+          console.log(data.data);
         })
 
       $http.get('/api/jackpotBets/', {
@@ -374,7 +407,6 @@ angular.module('gameApp').controller('mainCtrl', [
 
       $scope.renderRoulette(data.winnerId);
       $scope.newGameTimer = 15;
-
       var qwe = setInterval(function () {
         $scope.$apply(function () {
           if ($scope.newGameTimer <= 0) {
@@ -389,8 +421,6 @@ angular.module('gameApp').controller('mainCtrl', [
             var roulElement = angular.element(document.getElementsByClassName('qwe'));
             roulElement.css('background-image', 'url()')
             roulElement.removeClass('roulette-template');
-
-
             //Обновление данных
             $scope.stats.gamesTotalCost  +=  $scope.currentGame.cost;
             $scope.stats.gamesCount++;
@@ -496,12 +526,12 @@ angular.module('gameApp').controller('mainCtrl', [
       }
 
       var index = _.findIndex($scope.bets, ['userId', winnerId]);
-      players.splice(81, 0, {
+      players.splice(79, 0, {
         userId: winnerId,
         avatar: $scope.bets[index].User.avatar,
         chance: $scope.getUserChance(winnerId)
       });
-
+      console.log($scope);
       $scope.rouletteGamers = players;
     }
 

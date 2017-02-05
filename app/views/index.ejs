@@ -1,25 +1,70 @@
 <!DOCTYPE html>
 <html lang="ru" ng-app="gameApp">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-  <title>CSCONTROL.RU	– Самая честная CS:GO рулетка!</title>
+    <title>Lottgame.com – Check your lucky!</title>
 
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <link href="css/ehrb9.css" rel="stylesheet" type="text/css">
-  <link href="css/main.css" rel="stylesheet" type="text/css">
-  <link href="css/reset.css" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="css/ngDialog.css">
-  <link rel="stylesheet" href="css/ngDialog-theme-default.css">
-  <link rel="stylesheet" href="css/swiper.css">
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.ng-notify/0.6.2/ng-notify.min.css">
-  <style type="text/css" id="core-notify">.notify-corner{position:fixed;margin:20px;z-index:1050;}.notify-corner .notify-wrapper,.notify-corner .notify-container{position:relative;display:block;height:inherit;width:395px;margin:3px;}.notify-wrapper{z-index:1;position:absolute;display:inline-block;height:0;width:0;}.notify-container{display:none;z-index:1;position:absolute;}.notify-hidable{cursor:pointer;}[data-notify-text],[data-notify-html]{position:relative;}.notify-arrow{position:absolute;z-index:2;width:0;height:0;}</style>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link href="css/ehrb9.css" rel="stylesheet" type="text/css">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="css/reset.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="css/ngDialog.css">
+    <link rel="stylesheet" href="css/ngDialog-theme-default.css">
+    <link rel="stylesheet" href="css/swiper.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/angular.ng-notify/0.6.2/ng-notify.min.css">
+    <style type="text/css" id="core-notify">.notify-corner {
+            position: fixed;
+            margin: 20px;
+            z-index: 1050;
+        }
+
+        .ng-cloak{
+        	display: none;
+        }
+
+        .notify-corner .notify-wrapper, .notify-corner .notify-container {
+            position: relative;
+            display: block;
+            height: inherit;
+            width: 395px;
+            margin: 3px;
+        }
+
+        .notify-wrapper {
+            z-index: 1;
+            position: absolute;
+            display: inline-block;
+            height: 0;
+            width: 0;
+        }
+
+        .notify-container {
+            display: none;
+            z-index: 1;
+            position: absolute;
+        }
+
+        .notify-hidable {
+            cursor: pointer;
+        }
+
+        [data-notify-text], [data-notify-html] {
+            position: relative;
+        }
+
+        .notify-arrow {
+            position: absolute;
+            z-index: 2;
+            width: 0;
+            height: 0;
+        }</style>
 
 </head>
 <body ng-controller="mainCtrl">
@@ -29,95 +74,160 @@
 <!--<audio id="tik-sound1" src="sounds/click.mp3" preload="auto"></audio>-->
 <!--<audio id="tik-sound2" src="sounds/click.mp3" preload="auto"></audio>-->
 <!--<audio id="tik-sound3" src="sounds/click.mp3" preload="auto"></audio>-->
-
+<a class="language" href="#">
+    Change language
+</a>
 <div class="wrapper-main">
-  <header class="header-main">
-
-    <div class="header-main-center">
-      <a href="#/" class="logo"></a>
-      <% if(!user) { %>
-<div class="wrapper-logo-login">
-        <div class="profile-block profile-block_2" ng-class="{'show': !auth }">
-          <a  href="/login" class="login-with-steam-button">Войти через Steam</a>
-          <div class="clear"></div>
-        </div>
-     <% } else { %>
-        <div class="login-info-block" ng-class="{'show': auth}">
-          <div class="info-pofil">
-            <div class="info-pofil-player">
-              <div class="info-pofil-player-icon">
-                <img class="avatar-img" ng-src="{{ auth.avatarfull }}" alt="{{ auth.personaname }}" />
-              </div>
-
-              <p class="name-player-login">{{ auth.personaname }}</p>
-
-              <div class="clear"></div>
+    <header class="header-main">
+        <div class="header-main-center">
+            <a href="#/" class="logo"></a>
+            <div class="statistic">
+                <h2 class="h2">Статистика</h2>
+                <h3 class="h3 ng-cloak">Онлайн: <b>{{datas.userOnline}}</b></h3>
+                <h3 class="h3 ng-cloak">Игр за сегодня: <b>{{stats.gamesCount | number : 0}}</b></h3>
+                <h3 class="h3 ng-cloak">Выигрыш сегодня: <b>{{stats.gamesTotalCost | number : 2}} <span>{{currency}}</span></b></h3>
             </div>
+            <% if(!user) { %>
+            <div class="wrapper-logo-login">
+                <div class="profile-block profile-block_2" ng-class="{'show': !auth }">
+                    <a href="/login" class="login-with-steam-button">Войти через Steam</a>
+                    <div class="clear"></div>
+                </div>
+                <% } else { %>
+                <div class="login-info-block" ng-class="{'show': auth}">
+                    <div class="info-pofil">
+                        <div class="info-pofil-player">
+                            <div class="info-pofil-player-icon">
+                                <img class="avatar-img ng-cloak" ng-src="{{ auth.avatarfull }}" alt="{{ auth.personaname }}"/>
+                            </div>
 
-            <!-- <div class="info-pofil-balance">
-                              <p class="info-pofil-balance-text">Баланc:</p>
-                              <p class="info-pofil-balance-sum">56 525руб.</p>
-                          </div> -->
+                            <p class="name-player-login ng-cloak">{{ auth.personaname }}</p>
 
-            <a href="/logout" class="button-header-logout">Выход</a>
+                            <div class="clear"></div>
+                        </div>
+                        <a href="/logout" class="button-header-logout">Выход</a>
+                        <div class="clear"></div>
+                    </div>
 
-            <div class="clear"></div>
-          </div>
+                    <div class="wrapper-link">
+                        <p class="wrapper-link-name">Ссылка на трейд:</p>
+                        <button type="submit" class="wrapper-link-button-i" ng-click="saveTradeLink()"></button>
+                        <input rel="get-trade-link" type="text" name="link" placeholder="Введите ссылку..."
+                               class="wrapper-link-input-i"
+                               ng-model="auth.tradelink">
+                        <a class="wrapper-link-i"
+                           href="http://steamcommunity.com/id/id/tradeoffers/privacy#trade_offer_access_url"
+                           target="_blank">Где взять?</a>
+                    </div>
 
-          <div class="wrapper-profil-button">
-            <ul>
-              <li><a href="#/my/inventory">Инвентарь</a></li>
-            </ul>
-            <div class="clear"></div>
-          </div>
+                    <div class="clear"></div>
+                </div>
+                <% } %>
+                <div class="clear"></div>
+            </div>
+            <h2 class="menu-title">
+                Меню
+            </h2>
+            <div class="wrapper-main-menu">
+                <ul>
+                    <li><a href="#/" ng-click="updateTimer()">Играть</a></li>
+                    <!-- <li><a href="#/top">Топ игроков</a></li> -->
+                     <li><a href="#/history">История</a></li>
+                     <li><a href="#/about">О сайте</a></li>
+                    <li><a href="#/faq">F.A.Q</a></li>
+                    <li><a href="#/support">Поддержка</a></li>
+                </ul>
+                <div class="clear"></div>
+            </div>
+    </header>
 
-          <div class="wrapper-link">
-            <button type="submit" class="wrapper-link-button-i" ng-click="saveTradeLink()"></button>
-            <input rel="get-trade-link" type="text" name="link" placeholder="Введите ссылку..." class="wrapper-link-input-i"
-                   ng-model="auth.tradelink">
+    <ng-view></ng-view>
 
-            <a class="wrapper-link-i" href="http://steamcommunity.com/id/id/tradeoffers/privacy#trade_offer_access_url" target="_blank"><img src="img/znak.png" alt="question"></a>
-          </div>
-
-          <div class="clear"></div>
+    <div class="inventory-wrapper">
+        <div class="inventory-header">
+            <h3 class="inventory-title">Инвертарь</h3>
+            <p class="balance">$<span ng-bind="inventorySumm | number : 2"></span></p>
         </div>
-        <% } %>
-        <div class="clear"></div>
-      </div>
-
-      <div class="wrapper-main-menu">
-        <ul>
-          <li><a href="#/" ng-click="updateTimer()">играть</a></li>
-          <li><a href="#/top">топ игроков</a></li>
-          <li><a href="#/history">история</a></li>
-          <li><a href="#/about">о сайте</a></li>
-          <li><a href="" ng-click="openFairModal()">честная игра</a></li>
-          <li><a href="" ng-click="openSupportModal()">поддержка</a></li>
-        </ul>
-        <div class="clear"></div>
-      </div>
-  </header>
-
-  <ng-view></ng-view>
+        <div class="inventory">
+            <div class="items-box"  ng-if="!loading">
+                <div class="inventory-is-empty">
+                    <p ng-if="!inventoryItems.length">Добавьте вещи в инвертарь</p>
+                    <div class="items" ng-if="inventoryItems.length">
+                        <div class="blue item" ng-repeat="item in inventoryItems track by $index"
+                             ng-class="{selected: item.selected}"
+                             ng-click="selectItem(item.id, $index)" ng-cloak>
+                            <span class="price" ng-bind="'$' + item.price"></span>
+                            <img class="blue_skin" ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.image}}">
+                            <span class="name">{{item.name}}&nbsp;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kart-loader" ng-if="loading">
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+            <div class="sheath">
+                <div class="segment"></div>
+            </div>
+        </div>
+        <div class="inventory-footer">
+            <p class="balance">Баланс: <b class="currency">$</b><span ng-bind="inventorySumm | number : 2"></span></p>
+            <div class="button" ng-click="reloadInventory()">Обновить</div>
+            <div class="button"><a href="{{infConfig.tradelink}}" target="_blank">Депозит</a></div>
+            <div class="button" ng-click="withdraw()">Вывести</div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
-  var authInit = false;
+    var authInit = false;
 </script>
 
 <script type="text/javascript">
-  <% if (user) { %>
-  var authInit = {
-    'steamid' : '<%- user.userData.steamId%>',
-    'tradelink' : '<%- user.userData.tlink%>',
-    'personaname' : '<%- user.userData.name%>',
-    'profileurl' : '<%- user._json.profileurl %>',
-    'avatar' : '<%- user._json.avatar %>',
-    'avatarmedium' : '<%- user._json.avatarmedium%>',
-    'avatarfull' : '<%- user._json.avatarfull%>',
-    'realname' : '<%- user._json.realname%>'
-  };
-  <% } %>
+    <% if (user) { %>
+    var authInit = {
+        'steamid': '<%- user.userData.steamId %>',
+        'tradelink': '<%- user.userData.tlink %>',
+        'personaname': '<%- user.userData.name %>',
+        'profileurl': '<%- user._json.profileurl %>',
+        'avatar': '<%- user._json.avatar %>',
+        'avatarmedium': '<%- user._json.avatarmedium %>',
+        'avatarfull': '<%- user._json.avatarfull %>',
+        'realname': '<%- user._json.realname %>'
+    };
+    <% } %>
 </script>
 
 <script src="js/lodash.min.js"></script>
@@ -160,160 +270,159 @@
 
 
 <div class="chat-box" ng-app="chat" ng-controller="ChatController as chat">
-  <label>Online chat
-    <% if (user && user.userData.ban > new Date()) { %>
-    (бан до <%- user.userData.ban %>)
-    <% } %>
-    <span>__</span></label>
-  <div class="chat-box-content">
-    <div ng-cloak ng-repeat="msg in chat.messages track by $index" id="chatMsg{{msg.id}}" class="message">
-      <img id="{{msg.userId}}" tabindex="0" chatAvatar src="{{msg.avatar}}">
-      <div>
-        <span class="nick">{{msg.name}}</span>
-        <div>
-          <span class="text">{{msg.text}}</span>
+    <label>Online chat
+        <% if (user && user.userData.ban > new Date()) { %>
+        (бан до <%- user.userData.ban %>)
+        <% } %>
+        <span>__</span></label>
+    <div class="chat-box-content">
+        <div ng-cloak ng-repeat="msg in chat.messages track by $index" id="chatMsg{{msg.id}}" class="message">
+            <img id="{{msg.userId}}" tabindex="0" chatAvatar src="{{msg.avatar}}">
+            <div>
+                <span class="nick">{{msg.name}}</span>
+                <div>
+                    <span class="text">{{msg.text}}</span>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  <div class="chat-box-panel">
-    <input ng-model="chat.messageText" type="text" placeholder="<%= user ?  user.userData.ban ? 'Sorry, you are banned' :'Message text' : 'Need autorisation' %>">
-    <button class="btn btn-success" <%= user ? '' : ' disabled = "disabled"' %> ng-click="chat.addMessage()">
-      <i class="glyphicon glyphicon-send"></i></button>
-  </div>
+    <div class="chat-box-panel">
+        <input ng-model="chat.messageText" type="text"
+               placeholder="<%= user ? user.userData.ban ? 'Sorry, you are banned' : 'Message text' : 'Need autorisation' %>">
+        <button class="btn btn-success" <%= user ? '' : ' disabled = "disabled"' %> ng-click="chat.addMessage()">
+            <i class="glyphicon glyphicon-send"></i></button>
+    </div>
 </div>
 
 <script>
-  /**
-   * Chat module
-   */
+    /**
+     * Chat module
+     */
 
-  angular
-    .module('gameApp')
+    angular
+            .module('gameApp')
 
-    .controller('ChatController', function ($scope, Chat) {
-      var vm = this;
-      vm.messages = [];
-      window.localStorage.lastMessageId = 1;
+            .controller('ChatController', function ($scope, Chat) {
+                var vm = this;
+                vm.messages = [];
+                window.localStorage.lastMessageId = 1;
 
-      Chat.list()
-        .then(function (res) {
-          vm.messages = res;
-          $('.messages').animate({scrollTop: $('.messages').css('height')}, 'slow');
-        });
+                Chat.list()
+                        .then(function (res) {
+                            vm.messages = res;
+                            $('.messages').animate({scrollTop: $('.messages').css('height')}, 'slow');
+                        });
 
-      vm.addMessage = function () {
-        if (!vm.messageText) {
-          return;
-        }
-        var newMessage = {
-          text: vm.messageText
-        };
-        Chat.add(newMessage)
-          .then(function () {
-            vm.messageText = '';
-          })
-      }
+                vm.addMessage = function () {
+                    if (!vm.messageText) {
+                        return;
+                    }
+                    var newMessage = {
+                        text: vm.messageText
+                    };
+                    Chat.add(newMessage)
+                            .then(function () {
+                                vm.messageText = '';
+                            })
+                }
 
-      var socket = io();
+                var socket = io();
 
-      socket.on('newMessage', function (message) {
-        $scope.$apply(function(){
-          vm.messages.push(message)
-        })
-      });
+                socket.on('newMessage', function (message) {
+                    $scope.$apply(function () {
+                        vm.messages.push(message)
+                    })
+                });
 
-    })
+            })
 
-    .service('Chat', function ($http) {
-      var _Chat = this;
-      var apiUrl = '/api/chat/';
+            .service('Chat', function ($http) {
+                var _Chat = this;
+                var apiUrl = '/api/chat/';
 
-      this.list = function () {
-        return $http.get(apiUrl,{
-            params:{
-              id: window.localStorage.lastMessageId
-            }
-          })
-          .then(function (res) {
-            res.data.length && (window.localStorage.lastMessageId=res.data[res.data.length-1].id);
-            return res.data;
-          })
-          .catch(function (err) {
-            return [];
-          });
-      }
-      this.add = function (chatMessage) {
-        return $http.post(apiUrl,chatMessage)
-          .then(function (res) {
-            return res.data;
-          })
-          .catch(function (err) {
-            return [];
-          });
-      }
-    });
-
+                this.list = function () {
+                    return $http.get(apiUrl, {
+                        params: {
+                            id: window.localStorage.lastMessageId
+                        }
+                    })
+                            .then(function (res) {
+                                res.data.length && (window.localStorage.lastMessageId = res.data[res.data.length - 1].id);
+                                return res.data;
+                            })
+                            .catch(function (err) {
+                                return [];
+                            });
+                }
+                this.add = function (chatMessage) {
+                    return $http.post(apiUrl, chatMessage)
+                            .then(function (res) {
+                                return res.data;
+                            })
+                            .catch(function (err) {
+                                return [];
+                            });
+                }
+            });
 
 
 </script>
 
 
 <script>
-  // jQuery tinyDraggable v1.0.2
-  // https://github.com/Pixabay/jQuery-tinyDraggable
-  $(function () {
-    !function (e) {
-      e.fn.tinyDraggable = function (n) {
-        var t = e.extend({handle: 0, exclude: 0}, n);
-        return this.each(function () {
-          var n, o, u = e(this), a = t.handle ? e(t.handle, u) : u;
-          a.on({
-            mousedown: function (a) {
-              if (!t.exclude || !~e.inArray(a.target, e(t.exclude, u))) {
-                a.preventDefault();
-                var f = u.offset();
-                n = a.pageX - f.left, o = a.pageY - f.top, e(document).on("mousemove.drag", function (e) {
-                  u.offset({top: e.pageY - o, left: e.pageX - n})
+    // jQuery tinyDraggable v1.0.2
+    // https://github.com/Pixabay/jQuery-tinyDraggable
+    $(function () {
+        !function (e) {
+            e.fn.tinyDraggable = function (n) {
+                var t = e.extend({handle: 0, exclude: 0}, n);
+                return this.each(function () {
+                    var n, o, u = e(this), a = t.handle ? e(t.handle, u) : u;
+                    a.on({
+                        mousedown: function (a) {
+                            if (!t.exclude || !~e.inArray(a.target, e(t.exclude, u))) {
+                                a.preventDefault();
+                                var f = u.offset();
+                                n = a.pageX - f.left, o = a.pageY - f.top, e(document).on("mousemove.drag", function (e) {
+                                    u.offset({top: e.pageY - o, left: e.pageX - n})
+                                })
+                            }
+                        }, mouseup: function () {
+                            e(document).off("mousemove.drag")
+                        }
+                    })
                 })
-              }
-            }, mouseup: function () {
-              e(document).off("mousemove.drag")
             }
-          })
-        })
-      }
-    }(jQuery);
-  });
-
-  $(function () {
-    var is_expanded = true,
-      chat_container = $('.chat-box'),
-      chat_content = chat_container.find('.chat-box-content'),
-      chat_panel = chat_container.find('.chat-box-panel'),
-      chat_input = chat_panel.find('input[type=text]');
-    send_button = chat_panel.find('button');
-    $(chat_container).tinyDraggable({handle: 'label'});
-
-    $(chat_container).find('label').on('dblclick', function () {
-      chat_content.add(chat_panel).css('display', is_expanded ? 'none' : 'block');
-      chat_container.css('height', (is_expanded ? '24' : '400') + 'px');
-      is_expanded = !is_expanded;
+        }(jQuery);
     });
 
-    $(chat_container).find('label').find('span').on('click', function () {
-      chat_content.add(chat_panel).css('display', is_expanded ? 'none' : 'block');
-      chat_container.css('height', (is_expanded ? '24' : '400') + 'px');
-      is_expanded = !is_expanded;
-    });
+    $(function () {
+        var is_expanded = true,
+                chat_container = $('.chat-box'),
+                chat_content = chat_container.find('.chat-box-content'),
+                chat_panel = chat_container.find('.chat-box-panel'),
+                chat_input = chat_panel.find('input[type=text]');
+        send_button = chat_panel.find('button');
+        $(chat_container).tinyDraggable({handle: 'label'});
 
-    $(chat_input).keyup(function (event) {
-      if (event.keyCode == 13) {
-        send_button.click();
-      }
-    });
+        $(chat_container).find('label').on('dblclick', function () {
+            chat_content.add(chat_panel).css('display', is_expanded ? 'none' : 'block');
+            chat_container.css('height', (is_expanded ? '24' : '400') + 'px');
+            is_expanded = !is_expanded;
+        });
 
-  });
+        $(chat_container).find('label').find('span').on('click', function () {
+            chat_content.add(chat_panel).css('display', is_expanded ? 'none' : 'block');
+            chat_container.css('height', (is_expanded ? '24' : '400') + 'px');
+            is_expanded = !is_expanded;
+        });
+
+        $(chat_input).keyup(function (event) {
+            if (event.keyCode == 13) {
+                send_button.click();
+            }
+        });
+    });
 </script>
 
 </body>

@@ -1,49 +1,34 @@
 <div class="wp-central-content">
-   <div class="wrapper-activity-jackpot-main">
-       <div class="wrapper-activity">
-           <p class="wrapper-activity-title">Статистика сайта</p>
-           <div class="wp-games-today">
-               <p class="wp-games-today-title">сегодня игр</p>
-               <p class="wp-games-today-number">{{stats.gamesCount | number : 0}}</p>
-           </div>
-           <div class="wp-now-onlay">
-               <p class="wp-now-onlay-today-title">сейчас онлайн</p>
-               <p class="wp-now-onlay-today-number">{{datas.userOnline}}</p>
-           </div>
-           <div class="wp-winnings-today">
-               <p class="wp-winnings-today-title">выигрыш сегодня</p>
-               <p class="wp-winnings-today-number">{{stats.gamesTotalCost | number : 2}} <span>{{currency}}</span></p>
-           </div>
-           <div class="clear"></div>
-       </div>
-       <div class="wrapper-jackpot-main">
-           <p class="wrapper-jackpot-main-title">Главный джекпот игры:</p>
-           <div class="wrapper-jackpot-main-sum">{{maxJackpotInGame | number : 2}} <span>{{currency}}</span></div>
-       </div>
-       <div class="clear"></div>
-   </div>
+    <!--<div class="wrapper-activity-jackpot-main">-->
+    <!--<div class="wrapper-jackpot-main">-->
+    <!--<p class="wrapper-jackpot-main-title">Главный джекпот игры:</p>-->
+    <!--<div class="wrapper-jackpot-main-sum">{{maxJackpotInGame | number : 2}} <span>{{currency}}</span></div>-->
+    <!--</div>-->
+    <!--<div class="clear"></div>-->
+    <!--</div>-->
     <div class="wrapper-main-game">
+        <div class="wrapper-last-winner">
+            <div class="wrapper-last-winner-block name">
+                <p class="last-winner-chance-title">
+                    Победил: <span class="user-name">{{prevGame.winner.name}}</span>
+                </p>
+            </div>
+            <div class="wrapper-last-winner-block">
+                <p class="last-winner-winnings-title">Банк: <span>{{prevGame.cost}}{{currency}}</span></p>
+            </div>
+            <div class="wrapper-last-winner-block">
+                <p class="last-winner-chance-title">C шансом: <span>{{prevGame.percent | number: 2}}%</span></p>
+            </div>
+        </div>
         <div class="wrapper-main-game-title">
             <p class="wrapper-main-game-title-i">Игра #<span>{{currentGame.id}}</span></p>
         </div>
         <div class="wrapper-main-game-title-bank">
             БАНК {{currentGame.cost | number : 2}}<span> {{currency}}</span>
         </div>
-        <div class="wrapper-progressbar-timer" ng-if="!showRoulette">
-            <div class="wp-progressbar">
-                <div class="wp-loader-i"></div>
-                <div class="progressbar-text"><span>{{currentGame.itemsnum | number: 0}}</span> {{num2str(bid.items_to_receive.length, ['предмет', 'предмета', 'предметов'])}}</div>
-                <div class="progressbar-value" style="width: {{(currentGame.itemsnum / infConfig.maxitems) * 100| number: 0}}%;">
-                    <div class="progressbar-stripes"></div>
-                </div>
-            </div>
-            <div class="wrapper-pointer">
-               или через
-            </div>
-
-            <div class="wp-timer-i">
-                <div class="timer countdownHolder gameEndTimer">
-                    <timer interval="1000" countdown="{{timer}}">
+        <div class="wp-timer-i">
+            <div class="timer countdownHolder gameEndTimer">
+                <timer interval="1000" countdown="{{timer}}">
                         <span class="countMinutes">
                             <span class="position digit">
                                 {{mminutes | limitTo: 1}}
@@ -53,121 +38,67 @@
                             </span>
                         </span>
 
-                        <span class="countSeconds">
+                    <span class="countSeconds">
                             <span class="position digit">
                                 {{sseconds | limitTo: 1}}
                             </span>
                             <span class="position digit">
                                 {{sseconds | limitTo: -1}}
-                             <!--    <span class="digit static ng-binding" style="top: 0px; opacity: 1;">
-                                </span> -->
+                                <!--    <span class="digit static ng-binding" style="top: 0px; opacity: 1;">
+                                   </span> -->
                             </span>
                         </span>
-                    </timer>
-                </div>
+                </timer>
             </div>
-            <div class="clear"></div>
         </div>
+        <div class="items-pull">
+            <div class="item" ng-repeat="bet in bets track by $index">
+                <img ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{bet.Warehouse.image}}">
+                <span class="price">${{bet.Warehouse.price}}</span>
+                <span class="weapon-name">{{bet.Warehouse.name}}</span>
+            </div>
+        </div>
+        <!--<div class="wrapper-progressbar-timer" ng-if="!showRoulette">-->
+        <!--<div class="wp-progressbar">-->
+        <!--<div class="wp-loader-i"></div>-->
+        <!--<div class="progressbar-text"><span>{{currentGame.itemsnum | number: 0}}</span> {{num2str(bid.items_to_receive.length, ['предмет', 'предмета', 'предметов'])}}</div>-->
+        <!--<div class="progressbar-value" style="width: {{(currentGame.itemsnum / infConfig.maxitems) * 100| number: 0}}%;">-->
+        <!--<div class="progressbar-stripes"></div>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div class="clear"></div>-->
+        <!--</div>-->
 
-      <div id="roulette-template" class="qwe min-box" ng-hide="!showRoulette">
-        <div class="triangle-roulette"></div>
-      </div>
-        <div class="game-info" ng-if="showRoulette">
+        <div id="roulette-template" class="qwe min-box" ng-hide="!showRoulette">
+            <div class="triangle-roulette"></div>
+        </div>
+        <div class="game-info" ng-if="gameOver">
             <div>
                 <div class="game-end-winner">
-                    <span class="game-end-winner-name">Победил игрок: <strong>{{ winnerName }}</strong></span><br/>
-                    <span class="game-end-winner-chance">Шанс: <strong>{{winnerChance}}</strong></span><br/>
-                    <span class="game-end-winner-money">Выигрыш: <strong class="winner-cost-value">{{ currentGame.cost }} {{ currency }}</strong></span>
-                    <span class="arrow-wh-top"></span>
-                    <span class="arrow-wh-top"></span>
-                    <span class="arrow-wh-top"></span>
-
+                    <span class="game-end-winner-name">Победил игрок: <strong>{{ winnerName }}</strong></span>
+                    <span class="game-end-winner-chance">Шанс: <strong>{{winnerChance}}%</strong></span>
+                    <span class="game-end-winner-money">Выигрыш: <strong class="winner-cost-value">{{ currentGame.cost }}{{ currency }}</strong></span>
                     <div class="clearfix"></div>
                 </div>
             </div>
         </div>
 
 
-        <ks-swiper-container initial-slide="10" loop="false" ng-if="currentGame.status === 'INPROGRESS'" show-nav-buttons="true" slides-per-view="0" space-between="0" pagination-clickable="false" class="customers players-percent">
-            <ks-swiper-slide class="swiper-slide customer" style="background-image:url({{getUserImg(user.steamid)}});" ng-repeat="user in currentGame.users | orderBy:'-chance'">
+        <ks-swiper-container initial-slide="10" loop="false" ng-if="currentGame.status === 'INPROGRESS'"
+                             show-nav-buttons="true" slides-per-view="0" space-between="0" pagination-clickable="false"
+                             class="customers players-percent">
+            <ks-swiper-slide class="swiper-slide customer" style="background-image:url({{getUserImg(user.steamid)}});"
+                             ng-repeat="user in currentGame.users | orderBy:'-chance'">
                 <span class="probability perc">{{user.chance*100 | number : 2}}</span>
             </ks-swiper-slide>
         </ks-swiper-container>
-
-        <div class="wrapper-last-winner">
-            <div class="wrapper-last-winner-description">
-                <p>последний победитель</p>
-            </div>
-            <div class="wrapper-last-winner-icon"><a href="{{prevGame.winner.steamId}}">
-                <img ng-src="{{prevGame.winner.avatar}}"></a></div>
-            <div class="wrapper-last-winner-chance name">
-                <p class="last-winner-chance-title">Имя:</p>
-                <p class="last-winner-chance-sum"><span class="user-name">{{prevGame.winner.name}}</span></p>
-            </div>
-            <div class="wrapper-last-winner-winnings">
-                <p class="last-winner-winnings-title">Выигрыш:</p>
-                <p class="last-winner-winnings-sum"><span>{{prevGame.cost}}</span> {{currency}}</p>
-            </div>
-            <div class="wrapper-last-winner-chance">
-                <p class="last-winner-chance-title">C шансом:</p>
-                <p class="last-winner-chance-sum"><span>{{prevGame.percent | number: 2}}</span>%</p>
-            </div>
-        </div>
-
-
         <div class="set-items nologin" ng-if="auth === false">
-            <div class="try-luck">
-                <p class="try-title">ИСПЫТАЙ СВОЙ ШАНС</p>
-                <p class="enter-in-game">вступи в игру</p>
-            </div>
-            <div class="arrows-enter">
-                <img src="img/arrow-up.png" alt="arrow-up" class="arrow-up">
-                <img src="img/arrow-down.png" alt="arrow-down" class="arrow-down">
-            </div>
-            <a class="lets-go enter-player"href="/login">ВОЙТИ И ИГРАТЬ</a>
+            <a class="lets-go enter-player" href="/login">ВОЙТИ И ИГРАТЬ</a>
         </div>
         <div class="set-items nologin" ng-if="auth !== false && !loggedUser">
-            <div class="try-luck">
-                <p class="try-title">ИСПЫТАЙ СВОЙ ШАНС</p>
-                <p class="enter-in-game">вступи в игру</p>
-            </div>
-            <div class="arrows-enter">
-                <img src="img/arrow-up.png" alt="arrow-up" class="arrow-up">
-                <img src="img/arrow-down.png" alt="arrow-down" class="arrow-down">
-            </div>
-            <a class="lets-go enter-player" ng-click="newBetTrigger()" href="">ВСТУПИТЬ В ИГРУ</a>
+            <a class="lets-go enter-player" ng-click="putBet()" href="">Сделать ставку</a>
         </div>
 
-        <div class="inventory" ng-if="UI.showInventory">
-            <div class="title">
-                <div class="left">
-                    Select the skins:
-                </div>
-                <div class="right">
-                    <div class="button" ng-click="reloadInventory()">Обновить</div>
-                    <div class="button"><a href="{{infConfig.tradelink}}" target="_blank">Депозит</a></div>
-                    <div class="button" ng-click="putBet()" style="background-color: red">Подтвердить</div>
-                </div>
-            </div>
-
-            <div class="items-box"  ng-if="!loading">
-                <div  class="inventory-is-empty">
-                    <p ng-if="!inventoryItems.length">Инвентарь пуст</p>
-                    <p ng-if="!inventoryItems.length"><a href=""> Сделай депозит!!!</a></p>
-
-                    <div class="items">
-                        <div class="blue item" ng-repeat="item in inventoryItems track by $index"
-                             ng-class="{selected: item.selected}"
-                             ng-click="selectItem(item.id, $index)" ng-cloak>
-                            <span class="price" ng-bind="'$' + item.price"></span>
-                            <img class="blue_skin" ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.image}}">
-                            <span class="name">{{item.name}}&nbsp;</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
         <div class="kart-loader" ng-if="loading">
             <div class="sheath">
                 <div class="segment"></div>
@@ -207,7 +138,8 @@
             </div>
         </div>
 
-        <div class="set-items" ng-if="auth !== false && loggedUser" ng-repeat="user in currentGame.users | filter:{steamid: auth.steamid}">
+        <div class="set-items" ng-if="auth !== false && loggedUser"
+             ng-repeat="user in currentGame.users | filter:{steamid: auth.steamid}">
             <div class="your-sets">
                 <p>{{user.itemsCnt}} из 20</p>
                 <p>Вы вложили в игру</p>
@@ -217,84 +149,33 @@
             </div>
             <a class="lets-go" href="{{infConfig.tradelink}}" target="_blank">ВСТУПИТЬ В ИГРУ</a>
         </div>
-        <div class="wrapper-color-block color-block1"><a href="http://steamcommunity.com/id/xx/edit" class="add-link" target="_blank">ДОБАВЬ</a> к нику skinswin.ru и получи +5% к выигрышу</div>
-        <div class="wrapper-color-block color-block2">Уважаемые победители! Во избежании проблем, просим <a href="http://steamcommunity.com/id/xxx/tradeoffers/" class="now-get" target="_blank">СРАЗУ</a> ПРИНИМАТЬ Ваш выигрыш!</div>
-        <div class="wrapper-color-block color-block3">ВНИМАНИЕ! Минимальная сумма депозита
-          <span ng-if="infConfig.minbet == 0">отсутствует</span>
-          <span ng-if="infConfig.minbet > 0">{{infConfig.minbet}} {{currency}}</span>
-          Максимальный депозит - {{infConfig.maxitems}} {{num2str(infConfig.maxitems, ['предмет', 'предмета', 'предметов'])}}.
-          Для старта необходимо 2 игрока<!--{{infConfig.minUsers}} {{num2str(infConfig.minUsers, ['игрок', 'игрока', 'игроков'])}}-->.</div>
-
         <div class="game-end" ng-if="currentGame.status == 'FINISHED'">
             <p class="end-title">ИГРА ЗАКОНЧИЛАСЬ</p>
-            <p class="number-round"><span class="fair-game-link" ng-click="openFairModal()">Честная игра</span><span>Число раунда: {{currentGame.clearGame.number}}</span></p>
+            <p class="number-round"><span class="fair-game-link" ng-click="openFairModal()">Честная игра</span><span>Число раунда: {{currentGame.clearGame.number}}</span>
+            </p>
         </div>
         <div class="game-now-ending" ng-if="currentGame.status == 'WAIT' || currentGame.status == 'ROULETTE'">
             <p class="end-title">ИГРА ЗАКАНЧИВАЕТСЯ</p>
             <p class="number-round">принимаются последние ставки из очереди в текущую игру</p>
         </div>
 
-        <div class="wrapper-profile-item-main-page">
-            <div class="profile-item-main-page-i profile-item-main-active" ng-repeat="bid in currentGame.tradeoffers | orderBy:'-_id'">
-                <div class="profile-item-main-page-i-ico"><img ng-src="{{bid.user.avatarfull}}"></div>
-                <div class="profile-item-main-page-i-nickname"><a href="http://steamcommunity.com/profiles/{{bid.steamid_other}}" target="_blank">{{bid.user.personaname}}</a></div>
-                <div class="profile-item-main-page-i-chance"><span class="profile-item-main-page-i-chance-text">шанс</span><span class="profile-item-main-page-i-chance-number" ng-repeat="user in currentGame.users | filter:{steamid: bid.steamid_other}">{{user.chance*100 | number : 2}}</span>%</div>
-                <div class="profile-item-main-page-i-number-skins"><span>{{bid.items_to_receive.length}}</span> {{num2str(bid.items_to_receive.length, ['скин', 'скина', 'скинов'])}}</div>
-                <div class="profile-item-main-page-i-ticket">Билет: <span class="profile-item-main-page-i-chance-number">от</span> #{{bid.fTicket}} <span class="profile-item-main-page-i-chance-number">до</span> #{{bid.lTicket}}</div>
-
-                <div class="profile-item-main-page-i-sum">(<span>{{bid.total | number: 2}}</span> руб.)</div>
-                <div class="clear"></div>
-                <div class="wrapper-list-item-main-page-skins">
-                    <div class="list-item-main-page-skins-i" ng-repeat="item in bid.items_to_receive track by $index">
-                            <a class="history-item-prize" data-image="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" data-title="{{ item.description.name }}" data-price="~ {{ item.price | number : 2 }}" style="position:relative;">
-                                    <img class="inner-images" src="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" alt="image" ng-mouseover="hoverIn()" ng-mouseleave="hoverOut()">
-                                    <div ng-show="hoverEdit" class="history-item-prize-drop" style="display: block; top: -120px; left: -135px;">
-                                        <div class="history-item-prize-drop-top">
-                                            <div class="history-item-prize-drop-left" style="background: {{ item.description.background_color }};">
-                                                <div class="history-item-prize-drop-image">
-                                                    <img src="http://steamcommunity-a.akamaihd.net/economy/image/{{ item.description.icon_url }}/85fx70f" alt="image">
-                                                </div>
-                                            </div>
-                                            <div class="history-item-prize-drop-top-inner">
-                                                <div class="history-item-prize-drop-title">{{ item.description.name }}</div>
-                                                <div class="history-item-prize-drop-price">~ {{ item.price | number : 2 }} {{currency}}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                    </div>
-                    <div class="clear"></div>
-                </div>
-            </div>
-            <div class="profile-item-main-page-i profile-item-main-active"
+        <div class="all-bets">
+            <div class="bet-wrapper"
                  ng-repeat="bet in betsGrouped track by $index">
-                <div class="profile-item-main-page-i-ico"><img ng-src="{{bet.avatar}}"></div>
-                <div class="profile-item-main-page-i-nickname">
-                  <a href="http://steamcommunity.com/profiles/{{bet.userId}}" target="_blank" ng-bind="bet.name"></a>
-                </div>
-                <div class="profile-item-main-page-i-chance">
-                  <span class="profile-item-main-page-i-chance-text">шанс</span>
-                  <span class="profile-item-main-page-i-chance-number" ng-bind="getUserChance(bet.userId)">0</span>%</div>
-                <div class="profile-item-main-page-i-number-skins"><span ng-bind="bet.items.length">3</span> скина</div>
-                <div class="profile-item-main-page-i-sum">(<span>{{bet.sum | number : 2}}</span> $.)</div>
-                <div class="clear"></div>
-                <div class="wrapper-list-item-main-page-skins">
-                    <div class="list-item-main-page-skins-i" ng-repeat="item in bet.items">
-                        <img ng-src="http://steamcommunity-a.akamaihd.net/economy/image/{{item.Warehouse.image}}">
+                <div class="bet-name-wrapper">
+                    <img ng-src="{{bet.avatar}}">
+                    <div class="row">
+                        <span class="bet-name">{{bet.name}}</span>
+                        <span class="bet-count">{{bet.items.length}} вещей</span>
                     </div>
-                    <div class="clear"></div>
                 </div>
+                <div class="bet-sum"><span>{{bet.sum | number : 2}}$</span></div>
+                <div class="bet-chance-wrapper">
+                    <span class="bet-chance">{{getUserChance(bet.userId)}}%</span>
+                </div>
+                <div class="clear"></div>
             </div>
-
         </div>
-        <div class="banner-set">
-            <img src="img/play.png" alt="play">
-            <p class="title">игра началась! вносите депозиты!</p>
-            <p class="hash-round">
-              <span class="fair-game-link" ng-click="openFairModal()">Честная игра</span>
-              <span class="hash-number">Хеш раунда: {{currentGame.module}}</span>
-            </p>
-            <p><a href="http://cscontrol.ru/">Скрипты для CS:GO</a></p>
-        </div>
+        <!--<p class="hash">Hash: {{currentGame.module}}</p>-->
     </div>
 </div>
