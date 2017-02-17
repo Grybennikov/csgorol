@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const path = require('path');
+const fs = require('fs')
 const fsp = require('fs-promise');
 const moment = require('moment');
 
@@ -48,10 +49,13 @@ module.exports = Promise.coroutine(function* (err) {
  */
 module.exports.checkLogFile = Promise.coroutine(function* (err) {
   let logFile = path.normalize(config.root + '/' + config.logFileName);
+  let botLogFile = path.normalize(config.root + '/botLog.txt');
 
   try {
     yield fsp.ensureFile(logFile);
     yield fsp.readJson(logFile, {encoding: 'utf8'});
+
+    yield fsp.ensureFile(botLogFile);
 
   } catch (err) {
     return fsp.writeJson(logFile, {});
@@ -74,6 +78,16 @@ function saveToFile(err) {
     let errorLog = yield fsp.readJson(logFile, {encoding: 'utf8'});
     errorLog[moment(new Date()).format('DD.MM.Y - hh:mm')] = JSON.stringify(err);
     yield fsp.writeJson(logFile, errorLog);
+    return true;
+  })();
+}
+
+module.exports.saveToFile = function(text) {
+  return Promise.coroutine(function* () {
+    var logger = fs.createWriteStream('botLog.txt', {flags: 'a'});
+
+    logger.write(text + '\n');
+    logger.end();
     return true;
   })();
 }

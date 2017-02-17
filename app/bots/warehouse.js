@@ -9,6 +9,7 @@ const config = require('../../config/config');
 const db = require('../models');
 
 const EL = require('../helpers/errorsLog');
+const LOG = require('../helpers/errorsLog');
 
 const moment = require('moment');
 
@@ -54,8 +55,10 @@ module.exports = function (accountSettings) {
             Promise.promisifyAll(offer);
             //console.log('accepted'); return yield offer.acceptAsync();
 
-            let userId = offer.partner.getSteamID64();
-            let botId  = steamUser.steamID.getSteamID64();
+            var userId = offer.partner.getSteamID64();
+            var botId  = steamUser.steamID.getSteamID64();
+            yield LOG.saveToFile('Offer ' + offer.id + ' from ' + userId);
+
 
             if (offer.state != 2) {
               return cancelOffer(offer, 'Offer, not active!');
@@ -68,9 +71,9 @@ module.exports = function (accountSettings) {
             }
 
             //Deposit price
-            let depositSum = 0;
-            let depositItems = [];
-            let anotherGame = false;
+            var depositSum = 0;
+            var depositItems = [];
+            var anotherGame = false;
 
             //Each all items in offer
             yield Promise.each(offer.itemsToReceive, function (e) {
@@ -79,7 +82,10 @@ module.exports = function (accountSettings) {
                 anotherGame = true;
               }
 
-              return db.Items.getSteamLyticsCost(e.market_name)
+              return LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' item name = ' + e.market_name)
+                .then(function(){
+                  return db.Items.getSteamLyticsCost(e.market_name);
+                })
                 .then(function (cost) {
                   if (!isNaN(cost)) {
                     depositSum += cost;
@@ -94,7 +100,7 @@ module.exports = function (accountSettings) {
                       image: e.icon_url
                     })
                   }
-                  return cost;
+                  return LOG.saveToFile('Offer ' + offer.id + ' from ' + userId + ' item name = ' + e.market_name + ' COST');
                 });
             });
 
@@ -103,9 +109,13 @@ module.exports = function (accountSettings) {
             }
 
             //Accept
+            yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ACCEPTING');
             yield offer.acceptAsync();
+            yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ACCEPTED');
 
+            yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ADDING TO DB');
             yield db.Warehouse.addSome(depositItems);
+            yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ADDED TO DB');
 
             console.log('Skins taken');
           } catch (err) {
@@ -139,7 +149,10 @@ module.exports = function (accountSettings) {
       }
 
       function cancelOffer(offer, msg) {
-        offer.cancelAsync()
+        return LOG.saveToFile('Offer from ' + steamUser.steamID.getSteamID64() +' rejected' + msg)
+          .then(function () {
+            return offer.cancelAsync();
+          })
           .then(function (err) {
             if (err) {
               EL(err);
