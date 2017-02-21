@@ -3,6 +3,7 @@
 const path = require('path');
 const Promise = require('bluebird');
 const _ = require('lodash');
+const moment = require('moment');
 const db = require('../models');
 const config = require('../../config/config');
 
@@ -11,6 +12,7 @@ const SteamUser = require('steam-user');
 const Steamcommunity = require('steamcommunity');
 const SteamTotp = require('steam-totp');
 const TradeOfferManager = require('steam-tradeoffer-manager');
+const LOG = require('../helpers/errorsLog');
 
 
 
@@ -42,19 +44,21 @@ module.exports.listAction = Promise.coroutine(function* (req, res, next) {
  */
 module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
   try {
-    let steamId = req.user.userData.steamId;
+    var steamId = req.user.userData.steamId;
 
     let siteSettings = yield db.Info.list(true);
     //if (!siteSettings.withdrawEnabled) {
     //  return res.send({status: 'error', msg: 'Withdraw disabled'});
     //}
 
-    let token = req.user.userData.tlink ? req.user.userData.tlink.split('token=')[1] : false;
+    var token = req.user.userData.tlink ? req.user.userData.tlink.split('token=')[1] : false;
     if (!token) {
       return res.status(400).send({status: 'error', msg: 'Please provide a trade link'});
     }
 
-    let itemsToGive = req.body.items;
+    var itemsToGive = req.body.items;
+    yield LOG.saveToFile('Withdraw items' + itemsToGive + ' from ' + steamId);
+
 
     if (!itemsToGive.length) {
       return res.status(400).send({status: 'error', msg: 'Select the skins'});
@@ -71,9 +75,11 @@ module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
       }
     });
 
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items after filtering ' + itemsToGive + ' from ' + steamId);
+
     let manager = global.warehouseBots[itemsToGive[0].botId].manager;
 
-    let inventoryItems = yield manager.loadInventoryAsync(config.steam.gameId, config.steam.contextId, true);
+    var inventoryItems = yield manager.loadInventoryAsync(config.steam.gameId, config.steam.contextId, true);
     inventoryItems = yield Promise.map(inventoryItems, function (e) {
       return {
         id: e.id,
@@ -90,11 +96,11 @@ module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
     });
 
     //Формирование списка на выдачу
-    let itemIndex = null;
-    let itemsCost = 0;
-    let itemsForOffer = [];
+    var itemIndex = null;
+    var itemsCost = 0;
+    var itemsForOffer = [];
     itemsToGive.forEach(function (e) {
-      itemIndex = -1
+      itemIndex = -1;
       itemIndex = _.findLastIndex(inventoryItems, function (ie) {
         return ie.marketHashName == e.name
       });
@@ -107,11 +113,13 @@ module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
 
     itemsToGive = itemsForOffer;
 
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items in offer ' + itemsToGive + ' from ' + steamId);
+
     if (itemsToGive.length == 0) {
       return res.status(400).send({status: 'error', msg: 'Sorry, skins not found. Reload inventory and try again'});
     }
 
-    let offer = manager.createOffer(new TradeOfferManager.SteamID(steamId), token);
+    var offer = manager.createOffer(new TradeOfferManager.SteamID(steamId), token);
     Promise.promisifyAll(offer);
 
     offer.addMyItems(itemsToGive);
@@ -121,8 +129,11 @@ module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
       return e.dbId;
     });
     yield db.Warehouse.remove(itemsToGive);
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items REMOVED' + itemsToGive + ' from ' + steamId);
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items SENDING' + itemsToGive + ' from ' + steamId);
 
     let pending = yield offer.sendAsync();
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + pending + ' | Withdraw items SEND' + itemsToGive + ' from ' + steamId);
 
     if (pending === 'pending') {
       return res.send({status: 'success', msg: 'pending'});
@@ -139,15 +150,15 @@ module.exports.withdrawAction = Promise.coroutine(function* (req, res, next) {
 
 module.exports.adminWithdraw = Promise.coroutine(function* (req, res, next) {
   try {
-    let link = req.body.link;
+    var link = req.body.link;
 
     //Фильтр на пренадлежание пользователю
 
-    let itemsToGive = yield db.Warehouse.botItems();
+    var itemsToGive = yield db.Warehouse.botItems();
 
-    let manager = global.warehouseBots[itemsToGive[0].botId].manager;
+    var manager = global.warehouseBots[itemsToGive[0].botId].manager;
 
-    let inventoryItems = yield manager.loadInventoryAsync(config.steam.gameId, config.steam.contextId, true);
+    var inventoryItems = yield manager.loadInventoryAsync(config.steam.gameId, config.steam.contextId, true);
     inventoryItems = yield Promise.map(inventoryItems, function (e) {
       return {
         id: e.id,
@@ -164,11 +175,12 @@ module.exports.adminWithdraw = Promise.coroutine(function* (req, res, next) {
     });
 
     //Формирование списка на выдачу
-    let itemIndex = null;
-    let itemsCost = 0;
-    let itemsForOffer = [];
+    var itemIndex = null;
+    var itemsCost = 0;
+    var itemsForOffer = [];
     itemsToGive.forEach(function (e) {
-      itemIndex = -1
+      itemIndex = -1;
+
       itemIndex = _.findLastIndex(inventoryItems, function (ie) {
         return ie.marketHashName == e.name
       });
@@ -185,8 +197,9 @@ module.exports.adminWithdraw = Promise.coroutine(function* (req, res, next) {
       return res.status(400).send({status: 'error', msg: 'Sorry, skins not found.'});
     }
 
-    let offer = manager.createOffer(link);
+    var offer = manager.createOffer(link);
     Promise.promisifyAll(offer);
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items ADD TO TRADE ' + itemsToGive);
 
     offer.addMyItems(itemsToGive);
     offer.setMessage('Skins from ' + config.siteName);
@@ -194,9 +207,12 @@ module.exports.adminWithdraw = Promise.coroutine(function* (req, res, next) {
     itemsToGive = itemsToGive.map(function(e) {
       return e.dbId;
     });
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items REMOVING FROM DB ' + itemsToGive);
     yield db.Warehouse.remove(itemsToGive);
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + 'Withdraw items REMOVED FROM DB ' + itemsToGive);
 
     let pending = yield offer.sendAsync();
+    yield LOG.saveToFile(moment().format('dd.MM.yyyy - hh:mm:ss | ') + pending + ' | Withdraw items REMOVING FROM DB ' + itemsToGive);
 
     if (pending === 'pending') {
       return res.send({status: 'success', msg: 'pending'});
