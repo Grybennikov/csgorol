@@ -114,6 +114,7 @@ module.exports = function (accountSettings) {
             yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ACCEPTED');
 
             yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ADDING TO DB');
+            LOG.saveToFile("CURRENT VALUE OF DEPOSIT ARRAYS" + JSON.stringify(depositItems));
             yield db.Warehouse.addSome(depositItems);
             yield LOG.saveToFile('Offer ' + offer.id +' from ' + userId + ' ADDED TO DB');
 
